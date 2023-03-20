@@ -1,0 +1,58 @@
+==	Параметры конфигурации
+
+=== Стендозависимые параметры деплоя
+
+Описание всех переменных в install_eip:
+
+.os_props.conf
+[%collapsible]
+====
+[source,properties]
+----
+* os_props_1
+* os_props_2
+* os_props_n
+----
+====
+
+Перечень папок в поставке для раскатки в OpenShift
+
+.os_yaml_dirs.conf
+[%collapsible]
+====
+[source]
+----
+dir1
+dir2
+dir3
+----
+====
+
+Пример конфигурации Install_EIP для обновления БД
+
+.liquibase.conf
+[%collapsible]
+====
+[source]
+----
+liquibase_log: changelog.yaml
+liquibase_basedir: "distrib/db"
+liquibase_user: example_user
+liquibase_pass: "{{ db_ora_password_dataspace }}"
+liquibase_version: "3.7.0"
+liquibase_params: "--url=jdbc:postgresql://url:host/schema --changeLogFile={{ liquibase_log }} --driver=org.postgresql.Driver --logLevel=info update -Dtablespace_t=pg_default -Dtablespace_i=pg_default -Dschemaname=schema -DdefaultSchemaName=schema"
+----
+====
+
+=== Секреты OSE
+
+Перечислить необходимые секреты, их состав, ссылки на инструкции по созданию
+
+=== Параметры настройки БД
+Типовые/ Не типовые
+
+Если настройки БД типовые, то указать ссылку на инструкцию от DataSpace (https://confluence.sberbank.ru/pages/viewpage.action?pageId=3313801156), иначе нужно описать перечень действий и настроек.
+
+Пример
+
+Параметры БД типовые https://confluence.sberbank.ru/pages/viewpage.action?pageId=3313801156

@@ -1,0 +1,149 @@
+docker:
+  images:
+    java: docker-internal.registry-ci.delta.sbrf.ru/ci02281165/ci03069386/bellsoft/liberica-openjdk-rhel7.7-205:15.0.2-10
+    postgres: docker-internal.registry-ci.delta.sbrf.ru/ci02281165/ci03069386/postgres:13-alpine
+
+credentials:
+  sonar: sbbol-sbt-sonar-token
+  service:
+    tuz_path: CI02281165_CI02352957/AD/delta.sbrf.ru/creds/INSERT_YOUR_TUZ_NAME
+    approle_path: CI02281165_CI02352957/A/CI03069386/JEN/MAIN/KV/approle
+  jenkins: sbt-qa-jenkins-sigma
+  nexus_token:
+    tuz_path: CI02281165_CI02352957/AD/delta.sbrf.ru/creds/INSERT_YOUR_TUZ_NAME
+    approle_path: CI02281165_CI02352957/A/CI03069386/JEN/MAIN/KV/approle
+  checkmarx: checkmarx-cred
+  openshift_token: os-token
+  registry_delta:
+    tuz_path: CI02281165_CI02352957/AD/delta.sbrf.ru/creds/INSERT_YOUR_TUZ_NAME
+    approle_path: CI02281165_CI02352957/A/CI03069386/JEN/MAIN/KV/approle
+
+project_name: sbbol-pprb-global-search
+allure_project_id: '138'
+
+pr_check:
+  vector:
+    compare:
+      release_uri: 'https://nexus-ci.delta.sbrf.ru/repository/maven-distr/CI02281165/pprb/CI03069386/D-01.000.00_0378/CI03069386-D-01.000.00_0378-distrib.zip'
+    workdir: vectors
+    match:
+      files:
+        - 'src/main/java/ru/sberbank/pprb/sbbol/draft/entity'
+        - 'src/test/java/ru/sberbank/pprb/sbbol/draft/changevector'
+    command: >-
+      ./gradlew
+      -PtokenName=${env.TOKEN_NAME}
+      -PtokenPassword=${env.TOKEN_PASSWORD}
+      -Dgradle.wrapperUser=${env.TOKEN_NAME}
+      -Dgradle.wrapperPassword=${env.TOKEN_PASSWORD}
+      -Dtest.results.enabled=true
+      -Dtest-layer=unit
+      applyVectorTest --info
+  liquibase:
+    match:
+      files:
+        - 'buildSrc/'
+        - 'src/main/resources/db/changelog'
+    changelog:
+      path: src/main/resources/db/changelog/changelog.yaml
+  openshift:
+    workdir: openshift
+    url_api: https://api.dev-terra000006-idm.ocp.delta.sbrf.ru:6443
+    namespace: ci02281165-sbbol-ufs-draft-prcheck
+    match:
+      files:
+        - 'buildSrc/'
+        - 'openshift/'
+        - 'jenkins/resources/openshift/'
+  deploy:
+    match:
+      files:
+        - 'buildSrc/'
+        - 'src/'
+        - 'openshift/'
+        - 'docker/'
+        - 'jenkins/settings.yml'
+      regex:
+        - '.*\.kts'
+        - '.*\.properties'
+    cpu: 2
+    memory: '8g'
+    jenkins_job: 'OAFSIEKO/SBBOL/EFS/DEV/OpenShift/Deploy/sbbol-ufs/deploy-sbbol-pprb-global-search-DEV' 
+    label: prcheck
+    branch: develop
+    istio_tag: '2.4.1'
+  build_gradle:
+    match:
+      files:
+        - 'src/'
+        - 'buildSrc/'
+      regex:
+        - '.*\.kts'
+        - '.*\.properties'
+    cpu: 1
+    memory: '1g'
+    command: >-
+      ./gradlew
+      -PtokenName=${env.TOKEN_NAME}
+      -PtokenPassword=${env.TOKEN_PASSWORD}
+      -Dgradle.wrapperUser=${env.TOKEN_NAME}
+      -Dgradle.wrapperPassword=${env.TOKEN_PASSWORD}
+      clean build -x test
+  test:
+    match:
+      files:
+        - 'src/'
+        - 'buildSrc/'
+        - 'jenkins/settings.yml'
+      regex:
+        - '.*\.kts'
+        - '.*\.properties'
+    cpu: 2
+    memory: '8g'
+    command: >-
+      ./gradlew
+      -PtokenName=${env.TOKEN_NAME}
+      -PtokenPassword=${env.TOKEN_PASSWORD}
+      -Dgradle.wrapperUser=${env.TOKEN_NAME}
+      -Dgradle.wrapperPassword=${env.TOKEN_PASSWORD}
+      -Dsonar.login=${env.SONAR_TOKEN}
+      -Dsonar.host.url=https://sbt-sonarqube.sigma.sbrf.ru/
+      -Dsonar.projectKey=ru.sberbank.pprb.sbbol.draft:sbbol-pprb-global-search #необходимо заменить на актуальное значение
+      -Dsonar.projectVersion=${pullRequest.fromRef.displayId}
+      -Dsonar.pullrequest.key=${params.pullRequestId}
+      -Dsonar.pullrequest.branch=${pullRequest.fromRef.displayId}
+      -Dsonar.pullrequest.base=${pullRequest.toRef.displayId}
+      -Dtest-layer=unit,api,web,configuration,cdcConsumer
+      -Dpactbroker.url=${env.PACT_BROKER_URL}
+      -Dallure.jobrunId=${launch.jobRunId}
+      -Dbuild.link=${env.BUILD_URL}
+      -Dbuild.type=prCheck
+      qaReporterUpload sonarCoverage --info
+
+release:
+  version_pattern: '\d{2}\.\d{3}\.\d{2}_\d{4}'
+  version_init: 01.000.00_0000
+  repository: maven-distr-dev  # необходим для releasePipe для выкачки предсобранных артефатов
+  artifact_id: CI03069386
+  group_id: CI02281165.pprb
+  docker_dev: docker-dev.registry-ci.delta.sbrf.ru
+  docker_prom: docker-release.registry-ci.delta.sbrf.ru
+  image_name: 'CI02281165/CI03069386/draft-pprb'
+  doc_path: 'build/docs'
+  default_values:
+    istio_tag: '2.4.1'
+  qgm:
+    repository: maven-distr
+  build_gradle:
+    cpu: 2
+    memory: '8g'
+    command: >-
+      ./gradlew
+      -PtokenName=${env.TOKEN_NAME}
+      -PtokenPassword=${env.TOKEN_PASSWORD}
+      -Dgradle.wrapperUser=${env.TOKEN_NAME}
+      -Dgradle.wrapperPassword=${env.TOKEN_PASSWORD}
+      -Pversion=${env.VERSION}
+      -Dbuild.link=${env.BUILD_URL}
+      -Dbuild.type=release
+      build -x test generateVectorTest --parallel --info
