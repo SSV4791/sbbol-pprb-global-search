@@ -1,0 +1,26 @@
+[versions]
+assured = "4.4.0"
+mockserver = "5.11.2"
+pact = "4.1.31"
+
+[libraries]
+junit5-consumer = { module = "au.com.dius.pact.consumer:junit5", version.ref = "pact" }
+junit5-provider = { module = "au.com.dius.pact.provider:junit5", version.ref = "pact" }
+mockserver-client-java = { module = "org.mock-server:mockserver-client-java", version.ref = "mockserver" }
+mockserver-netty = { module = "org.mock-server:mockserver-netty", version.ref = "mockserver" }
+mockserver-spring-test-listener = { module = "org.mock-server:mockserver-spring-test-listener", version.ref = "mockserver" }
+orm-tests-common = { module = "sbp.integration.orm:orm-tests-common", version = "4.2.1" }
+podam-core = { module = "uk.co.jemos.podam:podam", version = "7.2.7.RELEASE" }
+postgresql = { module = "org.testcontainers:postgresql", version = "1.17.3" }
+rest-assured = { module = "io.rest-assured:rest-assured", version.ref = "assured" }
+rest-assured-allure = { module = "io.qameta.allure:allure-rest-assured", version = "2.13.6" }
+rest-assured-common = { module = "io.rest-assured:rest-assured-common", version.ref = "assured" }
+rest-assured-json-assert = { module = "com.jayway.jsonpath:json-path-assert", version = "2.7.0" }
+spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-starter-test" }
+
+[bundles]
+mockserver = ["mockserver-client-java", "mockserver-netty", "mockserver-spring-test-listener"]
+pact = ["junit5-consumer", "junit5-provider"]
+rest-assured = ["rest-assured", "rest-assured-common", "rest-assured-json-assert"]
+
+[plugins]

@@ -12,32 +12,36 @@ os_project:
     - port: 8080
   health_check: false
   host: "https://api.dev-gen2.sigma.sbrf.ru:6443"
-  project: ci02281165-edevgen2-efs-kib-sbbol-dev-test31  #istio2
-  name: sbbol-pprb-global-search
+  project: ci02281165-sbbol-pprb-global-search-blue
+  name: sbbol-global-search
+  app:
+    javaToolOptions: >-
+      -XX:MaxRAMPercentage=25
+      -XX:InitialRAMPercentage=1.5625
   istio:
     ingress:
       mtls:
         route:
-          host: ingress-pprb-draft-tls-test.apps.dev-gen2.sigma.sbrf.ru
+          host: ingress-sbbol-pprb-global-search-tls-test.apps.dev-gen2.sigma.sbrf.ru
           port: 5443
       mtls_geo:
         route:
-          host: ingress-pprb-draft-geo-tls-test.apps.dev-gen2.sigma.sbrf.ru
+          host: ingress-sbbol-pprb-global-search-geo-tls-test.apps.dev-gen2.sigma.sbrf.ru
           port: 5441
       ott:
         route:
-          host: ingress-pprb-draft-ott-test.apps.dev-gen2.sigma.sbrf.ru
+          host: ingress-sbbol-pprb-global-search-ott-test.apps.dev-gen2.sigma.sbrf.ru
           port: 5444
         key_store: /path/to/sbbol_ufs_draft.p12
         trust_store: /path/to/sigma_ott_trust.p12
         OTT_MODULE_ID: sbbol_ufs_draft
       ott_geo:
         route:
-          host: ingress-pprb-draft-geo-ott-test.apps.dev-gen2.sigma.sbrf.ru
+          host: ingress-sbbol-pprb-global-search-geo-ott-test.apps.dev-gen2.sigma.sbrf.ru
           port: 5442
       healthcheck:
         route:
-          host: ingress-pprb-draft-geo-hc-test.apps.dev-gen2.sigma.sbrf.ru
+          host: ingress-sbbol-pprb-global-search-geo-hc-test.apps.dev-gen2.sigma.sbrf.ru
           port: 5446
 
     egress:
@@ -72,7 +76,7 @@ canary_suffix: main
 context_prefix: /sbbol-pprb-global-search/
 
 fluentbit:
-  module_id: sbbol_pprb_ddm
+  module_id: pprb4-digital-sbbol-global-search
 
 app_journal:
   secret: secret-appjournalstubsettings

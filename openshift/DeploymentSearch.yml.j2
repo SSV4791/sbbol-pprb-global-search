@@ -1,0 +1,248 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    app.openshift.io/connects-to: istio-system,{{ openshift.io_control_panel }}
+  name: {{ os_project.name }}-search-{{ canary_suffix }}
+  labels:
+    app: {{ os_project.name }}-search-{{ suffix_app_label }}
+    version: {{ version | default('v1') }}
+    app.kubernetes.io/part-of: {{ os_project.name }}
+spec:
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: {{ os_project.rollingParams.maxUnavailable | default('25%') }}
+      maxSurge: {{ os_project.rollingParams.maxSurge | default('25%') }}
+  replicas: {{ os_project.pods | default('1') }}
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: {{ os_project.name }}-search-{{ suffix_app_label }}
+      version: {{ version | default('v1') }}
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: 'true'
+        sidecar.istio.io/rewriteAppHTTPProbers: 'true'
+        sidecar.istio.io/proxyCPULimit: {{ os_project.istio.sidecar.limits.cpu | default("200m") }}
+        sidecar.istio.io/proxyMemoryLimit: {{ os_project.istio.sidecar.limits.memory | default("300Mi") }}
+        sidecar.istio.io/proxyCPU: {{ os_project.istio.sidecar.requests.cpu | default("50m") }}
+        sidecar.istio.io/proxyMemory: {{ os_project.istio.sidecar.requests.memory | default("150Mi") }}
+        openshift.io/scc: restricted
+{% if secman.openshift.enabled is not defined or secman.openshift.enabled | bool %}
+        vault.hashicorp.com/agent-inject: 'true'
+        vault.hashicorp.com/agent-init-first: 'false'
+        vault.hashicorp.com/agent-pre-populate-only: 'false'
+        vault.hashicorp.com/agent-pre-populate: 'false'
+        vault.hashicorp.com/agent-limits-cpu: '{{ os_project.vault.sidecar.limits.cpu | default("400m") }}'
+        vault.hashicorp.com/agent-limits-mem: '{{ os_project.vault.sidecar.limits.memory | default("128Mi") }}'
+        vault.hashicorp.com/agent-requests-cpu: '{{ os_project.vault.sidecar.requests.cpu | default("250m") }}'
+        vault.hashicorp.com/agent-requests-mem: '{{ os_project.vault.sidecar.requests.memory | default("64Mi") }}'
+        vault.hashicorp.com/role: '{{ secman.openshift.role }}'
+        vault.hashicorp.com/namespace: '{{ secman.openshift.tenant }}'
+{% for secret in (secman.openshift.inject_secrets.app | default({})).values() if secret.condition is not defined or secret.condition %}
+{% set index = loop.index %}
+{% for file_name, secret_key in secret.secrets.items() %}
+        vault.hashicorp.com/agent-inject-secret-{{ index }}{{ loop.index }}: 'true'
+        vault.hashicorp.com/agent-inject-file-{{ index }}{{ loop.index }}: '{{ file_name }}'
+        vault.hashicorp.com/agent-inject-template-{{ index }}{{ loop.index }}: |
+          {{ '{{-' }} with secret "{{ secret.path }}" {{ '-}}' }}
+            {{ file_name + '=' if secret.type == 'environment' }}{{ '{{' }} index .Data "{{ secret_key }}" | base64Decode {{ '}}' }}
+          {{ '{{-' }} end {{ '}}' }}
+        vault.hashicorp.com/secret-volume-path-{{ index }}{{ loop.index }}: '{{ "/vault/secrets/environments" if secret.type == "environment" else secret.volume.mount }}'
+        vault.hashicorp.com/agent-inject-perms-{{ index }}{{ loop.index }}: '{{ secret.defaultMode | default("0400") }}'
+{% endfor %}
+{% endfor %}
+{% endif %}
+      labels:
+        app: {{ os_project.name }}-search-{{ suffix_app_label }}
+        version: {{ version | default('v1') }}
+{% if secman.openshift.enabled is not defined or secman.openshift.enabled | bool %}
+        secman-injector: enabled
+{% endif %}
+    spec:
+      serviceAccountName: default
+      securityContext:
+        runAsNonRoot: true
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - topologyKey: kubernetes.io/hostname
+            labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - {{ os_project.name }}-search-{{ suffix_app_label }}
+              - key: version
+                operator: In
+                values:
+                - {{ version | default('v1') }}
+      containers:
+        - name: app
+# app_docker_image проставляется при сборке архива с конфигами
+          image: {{ registry_area_app | default("registry.ca.sbrf.ru/sigma") }}/{app_search_docker_image}
+          securityContext:
+            readOnlyRootFilesystem: true
+          imagePullPolicy: Always
+          env:
+            - name: NODE_NAME       #добавление имени ноды в переменные среды пода
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: POD_NAME        #добавление имени пода в переменные среды пода
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: RUN_DEBUG
+              value: 'false'
+            - name: JAVA_TOOL_OPTIONS     #автоматическое прокидывание JVM параметров (без явного указания в entrypoint.sh)
+              value: >-
+                -Dlogging.config=/deployments/config/logback/logback.xml
+                -Dspring.config.location=file:/deployments/config/application.properties,file:/deployments/config/app_journal/appJournal.properties
+                {{ os_project.app.javaToolOptions | default('') }}
+          ports:
+            - containerPort: 8080
+              name: http
+            - containerPort: 8000
+              name: tcp-debug
+          volumeMounts:
+            - name: app-config
+              mountPath: /deployments/config
+              readOnly: true
+            - name: logback-config
+              mountPath: /deployments/config/logback
+              readOnly: true
+            - name: logsshare
+              mountPath: /app/logs
+{% if secman.openshift.enabled is defined and not secman.openshift.enabled | bool %}
+            - name: app-journal-config
+              mountPath: /deployments/config/app_journal
+              readOnly: true
+            - name: kafka-ssl-secret
+              mountPath: /opt/keystore/kafka
+              readOnly: true
+{% endif %}
+            - name: java-tmp-dir
+              mountPath: /tmp
+            - name: waiting-secrets
+              mountPath: /tmp/secman/config
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8080
+              scheme: HTTP
+            periodSeconds: 30
+            successThreshold: 1
+            timeoutSeconds: 10
+            initialDelaySeconds: 80
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8080
+              scheme: HTTP
+            periodSeconds: 30
+            successThreshold: 1
+            timeoutSeconds: 10
+            initialDelaySeconds: 80
+          resources:
+            limits:
+              cpu: {{ os_project.limits.cpu | default("500m") }}
+              memory: {{ os_project.limits.memory | default("500Mi") }}
+              ephemeral-storage: {{ os_project.limits.ephemeral_storage | default("768Mi") }}
+            requests:
+              cpu: {{ os_project.requests.cpu | default("500m") }}
+              memory: {{ os_project.requests.memory | default("500Mi") }}
+              ephemeral-storage: {{ os_project.requests.ephemeral_storage | default("512Mi") }}
+        - name: fluentbit
+# Fluent Bit v1.8.8 https://confluence.delta.sbrf.ru/pages/viewpage.action?pageId=4429253739
+          image: {{ registry_area | default("registry.ca.sbrf.ru/sigma") }}/ci02587203/ci02809205_tengri/fluent-bit@sha256:e38955b3495fe6a40b0506326c1d8458e2f03ad67747406af75f3719678b6036
+          securityContext:
+            readOnlyRootFilesystem: true
+          imagePullPolicy: Always
+          resources:
+            limits:
+              cpu: {{ fluentbit.limits.cpu | default("300m") }}
+              memory: {{ fluentbit.limits.memory | default("512Mi") }}
+              ephemeral-storage: {{ fluentbit.limits.ephemeral_storage | default("2Gi") }}
+            requests:
+              cpu: {{ fluentbit.requests.cpu | default("200m") }}
+              memory: {{ fluentbit.requests.memory | default("256Mi") }}
+              ephemeral-storage: {{ fluentbit.requests.ephemeral_storage | default("2Gi") }}
+          env:
+            - name: service
+              value: {{ fluentbit.module_id }}
+            - name: cluster
+              value: {{ fluentbit.cluster }}
+            - name: moduleId
+              value: {{ fluentbit.module_id }}
+            - name: moduleVersion
+              value: {{ fluentbit.module_version }}
+            - name: nodeId
+              value: {{ fluentbit.module_id }}
+            - name: standId
+              value: {{ fluentbit.stand_id }}
+            - name: zoneId
+              value: {{ fluentbit.zone_id }}
+            - name: pod
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.name
+            - name: namespace
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.namespace
+          volumeMounts:
+            - name: logsshare
+              mountPath: /app/logs
+            - mountPath: /fluent-bit/etc
+              name: fluentbit
+            - mountPath: '/tmp'
+              name: fluentbit-tmp
+      volumes:
+        - name: app-config
+          configMap:
+            name: cm-app-search-properties-{{ canary_suffix }}
+            defaultMode: 0400
+            items:
+              - key: application.properties
+                path: application.properties
+        - name: logback-config
+          configMap:
+            name: cm-logback-{{ canary_suffix }}
+            defaultMode: 0400
+            items:
+              - key: logback.xml
+                path: logback.xml
+        - name: fluentbit
+          configMap:
+            defaultMode: 0400
+            name: cm-fluentbit-{{ canary_suffix }}
+        - name: logsshare
+          emptyDir: {}
+{% if secman.openshift.enabled is defined and not secman.openshift.enabled | bool %}
+        - name: app-journal-config
+          secret:
+            secretName: {{ app_journal.secret }}
+            defaultMode: 0400
+            optional: true
+        - name: kafka-ssl-secret
+          secret:
+            secretName: kafka-ssl-secret
+            defaultMode: 0400
+            optional: true
+{% endif %}
+        - name: java-tmp-dir
+          emptyDir: {}
+        - name: fluentbit-tmp
+          emptyDir: {}
+        - name: waiting-secrets
+          configMap:
+            name: waiting-secrets-{{ canary_suffix }}
+            defaultMode: 0400

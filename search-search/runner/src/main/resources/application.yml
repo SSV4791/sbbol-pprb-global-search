@@ -1,0 +1,16 @@
+server:
+  port: 8082
+spring:
+  main:
+    allow-bean-definition-overriding: true
+
+opensearch:
+  urls: localhost:9200
+  auth:
+    type: NATIVE
+    username: "admin"
+    password: "admin"
+  timeout:
+    request: 0
+    connect: 5000
+    socket: 60000

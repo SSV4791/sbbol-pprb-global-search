@@ -1,0 +1,30 @@
+integrations:
+  infra:
+    tengri:
+      - name: tengri-kafka-stub-0
+        host: tkldq-efs000217.vm.mos.cloud.sbrf.ru
+        ip: 10.53.164.226
+        port: 9093
+        protocol: TCP
+        ott: false
+        mtls: true
+        egress_port: 2100
+      - name: tengri-kafka-stub-1
+        host: tkldq-efs000218.vm.mos.cloud.sbrf.ru
+        ip: 10.53.164.47
+        port: 9093
+        protocol: TCP
+        ott: false
+        mtls: true
+        egress_port: 2101
+      - name: tengri-kafka-stub-2
+        host: tkldq-efs000219.vm.mos.cloud.sbrf.ru
+        ip: 10.53.164.224
+        port: 9093
+        protocol: TCP
+        ott: false
+        mtls: true
+        egress_port: 2102
+
+infra_entry:
+  tengri: "{{ integrations.infra.tengri }}"

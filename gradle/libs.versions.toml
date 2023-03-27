@@ -1,0 +1,29 @@
+[versions]
+mapstruct = "1.4.2.Final"
+opensearch = "1.3.7"
+spring-boot = "2.5.5"
+
+[libraries]
+commons-lang3 = { module = "org.apache.commons:commons-lang3", version = "3.12.0" }
+hibernate-jpamodelgen = { module = "org.hibernate:hibernate-jpamodelgen", version = "5.4.32.Final" }
+http-healthcheck-starter = { module = "ru.sbrf.sbbol.starters:http-healthcheck-starter", version = "4.1" }
+jackson-annotations = { module = "com.fasterxml.jackson.core:jackson-annotations", version = "2.14.1" }
+logstash-logback-encoder = { module = "net.logstash.logback:logstash-logback-encoder", version = "6.3" }
+mapstruct-core = { module = "org.mapstruct:mapstruct", version.ref = "mapstruct" }
+mapstruct-processor = { module = "org.mapstruct:mapstruct-processor", version.ref = "mapstruct" }
+opensearch = { module = "org.opensearch:opensearch", version.ref = "opensearch" }
+opensearch-rest-client = { module = "org.opensearch.client:opensearch-rest-client", version.ref = "opensearch" }
+opensearch-rest-high-level-client = { module = "org.opensearch.client:opensearch-rest-high-level-client", version.ref = "opensearch" }
+reflections = { module = "org.reflections:reflections", version = "0.9.11+pprb2" }
+spring-boot-autoconfigure = { module = "org.springframework.boot:spring-boot-autoconfigure", version.ref = "spring-boot" }
+spring-boot-autoconfigure-processor = { module = "org.springframework.boot:spring-boot-autoconfigure-processor", version.ref = "spring-boot" }
+spring-boot-configuration-processor = { module = "org.springframework.boot:spring-boot-configuration-processor", version.ref = "spring-boot" }
+spring-boot-dependencies = { module = "org.springframework.boot:spring-boot-dependencies", version.ref = "spring-boot" }
+spring-boot-starter = { module = "org.springframework.boot:spring-boot-starter" }
+spring-boot-starter-aop = { module = "org.springframework.boot:spring-boot-starter-aop" }
+spring-boot-starter-data-jpa = { module = "org.springframework.boot:spring-boot-starter-data-jpa" }
+spring-boot-starter-validation = { module = "org.springframework.boot:spring-boot-starter-validation" }
+spring-boot-starter-web = { module = "org.springframework.boot:spring-boot-starter-web" }
+
+[bundles]
+opensearch = ["opensearch", "opensearch-rest-client", "opensearch-rest-high-level-client"]
