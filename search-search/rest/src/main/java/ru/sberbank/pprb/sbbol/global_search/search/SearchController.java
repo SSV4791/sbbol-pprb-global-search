@@ -11,7 +11,7 @@ import ru.sberbank.pprb.sbbol.global_search.search.service.SearchService;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/api/v1/search")
+@RequestMapping("/api/v1")
 public class SearchController {
 
     private static final String FIND_ALL = "/find";
