@@ -4,74 +4,68 @@ docker:
     postgres: docker-internal.registry-ci.delta.sbrf.ru/ci02281165/ci03069386/postgres:13-alpine
 
 credentials:
-  sonar: sbbol-sbt-sonar-token
-  service:
-    tuz_path: CI02281165_CI02352957/AD/delta.sbrf.ru/creds/INSERT_YOUR_TUZ_NAME
-    approle_path: CI02281165_CI02352957/A/CI03069386/JEN/MAIN/KV/approle
-  jenkins: sbt-qa-jenkins-sigma
-  nexus_token:
-    tuz_path: CI02281165_CI02352957/AD/delta.sbrf.ru/creds/INSERT_YOUR_TUZ_NAME
-    approle_path: CI02281165_CI02352957/A/CI03069386/JEN/MAIN/KV/approle
-  checkmarx: checkmarx-cred
-  openshift_token: os-token
-  registry_delta:
-    tuz_path: CI02281165_CI02352957/AD/delta.sbrf.ru/creds/INSERT_YOUR_TUZ_NAME
-    approle_path: CI02281165_CI02352957/A/CI03069386/JEN/MAIN/KV/approle
+  sonar: CAB-SA-DVO05408-sonar
+  service: CAB-SA-DVO05408-service
+  jenkins: CAB-SA-DVO05408-jenkins
+  nexus_token: CAB-SA-DVO05408-nexus_token
+  checkmarx: CAB-SA-DVO05408-checkmarx
+  openshift_token: CAB-SA-DVO05408-openshift_token
+  registry_delta: CAB-SA-DVO05408-registry_delta
 
 project_name: sbbol-pprb-global-search
 allure_project_id: '138'
 
 pr_check:
-  vector:
-    compare:
-      release_uri: 'https://nexus-ci.delta.sbrf.ru/repository/maven-distr/CI02281165/pprb/CI03069386/D-01.000.00_0378/CI03069386-D-01.000.00_0378-distrib.zip'
-    workdir: vectors
-    match:
-      files:
-        - 'src/main/java/ru/sberbank/pprb/sbbol/draft/entity'
-        - 'src/test/java/ru/sberbank/pprb/sbbol/draft/changevector'
-    command: >-
-      ./gradlew
-      -PtokenName=${env.TOKEN_NAME}
-      -PtokenPassword=${env.TOKEN_PASSWORD}
-      -Dgradle.wrapperUser=${env.TOKEN_NAME}
-      -Dgradle.wrapperPassword=${env.TOKEN_PASSWORD}
-      -Dtest.results.enabled=true
-      -Dtest-layer=unit
-      applyVectorTest --info
-  liquibase:
-    match:
-      files:
-        - 'buildSrc/'
-        - 'src/main/resources/db/changelog'
-    changelog:
-      path: src/main/resources/db/changelog/changelog.yaml
+  #  vector:
+  #    compare:
+  #      release_uri: 'https://nexus-ci.delta.sbrf.ru/repository/maven-distr/CI02281165/pprb/CI03069386/D-01.000.00_0378/CI03069386-D-01.000.00_0378-distrib.zip'
+  #    workdir: vectors
+  #    match:
+  #      files:
+  #        - 'src/main/java/ru/sberbank/pprb/sbbol/draft/entity'
+  #        - 'src/test/java/ru/sberbank/pprb/sbbol/draft/changevector'
+  #    command: >-
+  #      ./gradlew
+  #      -PtokenName=${env.TOKEN_NAME}
+  #      -PtokenPassword=${env.TOKEN_PASSWORD}
+  #      -Dgradle.wrapperUser=${env.TOKEN_NAME}
+  #      -Dgradle.wrapperPassword=${env.TOKEN_PASSWORD}
+  #      -Dtest.results.enabled=true
+  #      -Dtest-layer=unit
+  #      applyVectorTest --info
+  #  liquibase:
+  #    match:
+  #      files:
+  #        - 'buildSrc/'
+  #        - 'src/main/resources/db/changelog'
+  #    changelog:
+  #      path: src/main/resources/db/changelog/changelog.yaml
   openshift:
     workdir: openshift
     url_api: https://api.dev-terra000006-idm.ocp.delta.sbrf.ru:6443
-    namespace: ci02281165-sbbol-ufs-draft-prcheck
+    namespace: ci02281165-sbbol-pprb-global-search-blue
     match:
       files:
         - 'buildSrc/'
         - 'openshift/'
         - 'jenkins/resources/openshift/'
-  deploy:
-    match:
-      files:
-        - 'buildSrc/'
-        - 'src/'
-        - 'openshift/'
-        - 'docker/'
-        - 'jenkins/settings.yml'
-      regex:
-        - '.*\.kts'
-        - '.*\.properties'
-    cpu: 2
-    memory: '8g'
-    jenkins_job: 'OAFSIEKO/SBBOL/EFS/DEV/OpenShift/Deploy/sbbol-ufs/deploy-sbbol-pprb-global-search-DEV' 
-    label: prcheck
-    branch: develop
-    istio_tag: '2.4.1'
+  #  deploy:
+  #    match:
+  #      files:
+  #        - 'buildSrc/'
+  #        - 'src/'
+  #        - 'openshift/'
+  #        - 'docker/'
+  #        - 'jenkins/settings.yml'
+  #      regex:
+  #        - '.*\.kts'
+  #        - '.*\.properties'
+  #    cpu: 2
+  #    memory: '8g'
+  #    jenkins_job: 'OAFSIEKO/SBBOL/EFS/DEV/OpenShift/Deploy/sbbol-ufs/deploy-sbbol-pprb-global-search-DEV'
+  #    label: prcheck
+  #    branch: develop
+  #    istio_tag: '2.4.1'
   build_gradle:
     match:
       files:
@@ -123,15 +117,42 @@ pr_check:
 release:
   version_pattern: '\d{2}\.\d{3}\.\d{2}_\d{4}'
   version_init: 01.000.00_0000
-  repository: maven-distr-dev  # необходим для releasePipe для выкачки предсобранных артефатов
-  artifact_id: CI03069386
-  group_id: CI02281165.pprb
+  repository: maven-distr-dev
+  artifact_id: CI04756650
+  group_id: CI00908578
   docker_dev: docker-dev.registry-ci.delta.sbrf.ru
   docker_prom: docker-release.registry-ci.delta.sbrf.ru
-  image_name: 'CI02281165/CI03069386/draft-pprb'
+  images:
+    - name: CI00908578/CI04756650/search-admin
+      docker:
+        file:
+          path: docker/admin/Dockerfile
+      gradle:
+        key: adminDockerImage
+    - name: CI00908578/CI04756650/search-search
+      docker:
+        file:
+          path: docker/search/Dockerfile
+      gradle:
+        key: searchDockerImage
+    - name: CI00908578/CI04756650/search-sink
+      docker:
+        file:
+          path: docker/sink/Dockerfile
+      gradle:
+        key: sinkDockerImage
+    - name: CI00908578/CI04756650/search-task
+      docker:
+        file:
+          path: docker/task/Dockerfile
+      gradle:
+        key: taskDockerImage
   doc_path: 'build/docs'
   default_values:
+    params_branch: master
+    params_folder: develop
     istio_tag: '2.4.1'
+    reverse_and_publish: false
   qgm:
     repository: maven-distr
   build_gradle:

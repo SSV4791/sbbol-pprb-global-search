@@ -1,9 +1,0 @@
-integration_entries:
-- '{{ int.pprb.appjournal.v1_0 }}'
-- '{{ int.pprb.db_main.v1_0 }}'
-- '{{ int.pprb.db_si.v1_0 }}'
-- '{{ int.sbbol.rest_in.latest }}'
-- '{{ int.pprb.fluentbit.v1_0 }}'
-- '{{ int.pprb.dog900.v1_0 }}'
-int_entry:
-  ott: '{{ int.ott.v2_0 }}'

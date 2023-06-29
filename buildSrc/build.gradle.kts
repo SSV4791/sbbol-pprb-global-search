@@ -1,13 +1,13 @@
-
 plugins {
-    `java-library`
+    `kotlin-dsl`
 }
+
 val tokenName = project.properties["tokenName"] as String?
 val tokenPassword = project.properties["tokenPassword"] as String?
 
 repositories {
     maven {
-        url = uri("https://nexus-ci.delta.sbrf.ru/repository/maven-proxy-lib-internal/")
+        url = uri("https://nexus-ci.delta.sbrf.ru/repository/maven-lib-int/")
         credentials {
             username = tokenName
             password = tokenPassword

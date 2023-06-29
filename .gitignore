@@ -1,0 +1,24 @@
+.*
+!.editorconfig
+
+.idea
+.gradle
+**/.project
+**/.settings
+
+# Build
+**/generated/
+**/build
+**/logs
+
+# локальные настройки
+/local/
+/custom/
+/logs/
+**/target/
+
+# tests
+**/vectors/
+
+# allure
+**/allure-results/

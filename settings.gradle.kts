@@ -12,13 +12,30 @@ pluginManagement {
         }
 
         maven {
-            url = uri("https://nexus-ci.delta.sbrf.ru/repository/maven-proxy-lib-internal/")
+            url = uri("https://nexus-ci.delta.sbrf.ru/repository/maven-lib-int/")
             credentials {
                 username = tokenName
                 password = tokenPassword
             }
             isAllowInsecureProtocol = true
         }
+    }
+    @Suppress("UnstableApiUsage")
+    dependencyResolutionManagement {
+        @Suppress("UnstableApiUsage")
+        versionCatalogs {
+            create("liveLibs") {
+                from(files("gradle/libs.versions.toml"))
+            }
+            create("testLibs") {
+                from(files("gradle/test-libs.versions.toml"))
+            }
+        }
+    }
+    plugins {
+        id("io.spring.dependency-management") version "1.0.11.RELEASE"
+        id("org.openapi.generator") version "5.2.0"
+        id("org.springframework.boot") version "2.5.1"
     }
 }
 
@@ -38,3 +55,21 @@ gradleEnterprise {
 }
 
 rootProject.name = "sbbol-pprb-global-search"
+
+include(":docs")
+include(":search-admin:runner")
+include(":search-common:engine-core-api")
+include(":search-common:engine-core-impl")
+include(":search-common:facade-client")
+include(":search-common:facade-client-api")
+include(":search-common:search-core-api")
+include(":search-search:api")
+include(":search-search:rest")
+include(":search-search:runner")
+include(":search-search:service")
+include(":search-sink:api")
+include(":search-sink:runner")
+include(":search-sink:service")
+include(":search-task:rest")
+include(":search-task:runner")
+include(":search-task:service")
