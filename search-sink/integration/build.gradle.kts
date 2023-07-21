@@ -8,9 +8,11 @@ dependencies {
     annotationProcessor(liveLibs.lombok)
     compileOnly(liveLibs.lombok)
 
+    implementation(project(":search-sink:service"))
     implementation(platform(liveLibs.spring.boot.dependencies))
     implementation(liveLibs.spring.boot.starter)
+    implementation(liveLibs.spring.kafka)
 }
 
 description =
-    "Service ППРБ.Digital.Умный поиск. Загрузка документов в полнотекстовый индекс. Сервис загрузки"
+    "Service ППРБ.Digital.Умный поиск. Серверная часть загрузки документов в полнотекстовый индекс. Интеграция с кафкой"

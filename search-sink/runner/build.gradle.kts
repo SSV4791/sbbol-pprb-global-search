@@ -9,7 +9,7 @@ plugins {
 dependencies {
     implementation(platform(liveLibs.spring.boot.dependencies))
 
-    implementation(project(":search-sink:service"))
+    implementation(project(":search-sink:integration"))
 
     implementation(liveLibs.http.healthcheck.starter)
     implementation(liveLibs.logstash.logback.encoder)
@@ -26,4 +26,4 @@ dependencies {
     }
 }
 
-description = "ППРБ.Digital.Умный поиск Sink"
+description = "Service ППРБ.Digital.Умный поиск. Загрузка документов в полнотекстовый индекс. Запуск службы"

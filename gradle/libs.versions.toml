@@ -11,6 +11,7 @@ http-healthcheck-starter = { module = "ru.sbrf.sbbol.starters:http-healthcheck-s
 jackson-annotations = { module = "com.fasterxml.jackson.core:jackson-annotations", version.ref = "jackson" }
 jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jackson" }
 logstash-logback-encoder = { module = "net.logstash.logback:logstash-logback-encoder", version = "6.3" }
+lombok = { module = "org.projectlombok:lombok", version = "1.18.20" }
 mapstruct-core = { module = "org.mapstruct:mapstruct", version.ref = "mapstruct" }
 mapstruct-processor = { module = "org.mapstruct:mapstruct-processor", version.ref = "mapstruct" }
 opensearch = { module = "org.opensearch:opensearch", version.ref = "opensearch" }
@@ -26,6 +27,7 @@ spring-boot-starter-aop = { module = "org.springframework.boot:spring-boot-start
 spring-boot-starter-data-jpa = { module = "org.springframework.boot:spring-boot-starter-data-jpa" }
 spring-boot-starter-validation = { module = "org.springframework.boot:spring-boot-starter-validation" }
 spring-boot-starter-web = { module = "org.springframework.boot:spring-boot-starter-web" }
+spring-kafka = { module = "org.springframework.kafka:spring-kafka" }
 
 [bundles]
 opensearch = ["opensearch", "opensearch-rest-client", "opensearch-rest-high-level-client"]
