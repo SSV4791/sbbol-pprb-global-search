@@ -13,10 +13,8 @@ springBoot {
 dependencies {
     implementation(platform(liveLibs.spring.boot.dependencies))
 
-    implementation(project(":search-common:engine-core-api"))
-    implementation(project(":search-common:engine-core-impl"))
-    implementation(project(":search-common:facade-client"))
-    implementation(project(":search-common:facade-client-api"))
+    implementation(project(":search-common:engine:starter"))
+    implementation(project(":search-common:facade:starter"))
     implementation(project(":search-common:search-core-api"))
     implementation(project(":search-search:api"))
     implementation(project(":search-search:rest"))

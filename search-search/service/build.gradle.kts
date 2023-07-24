@@ -8,7 +8,7 @@ dependencies {
     annotationProcessor(liveLibs.mapstruct.processor)
 
     implementation(project(":search-search:api"))
-    implementation(project(":search-common:engine-core-api"))
+    implementation(project(":search-common:engine:starter"))
 
     implementation(platform(liveLibs.spring.boot.dependencies))
 

@@ -1,7 +1,6 @@
 package ru.sberbank.pprb.sbbol.global_search.search;
 
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 import ru.sberbank.pprb.sbbol.global_search.engine.entity.SearchableEntityService;
 import ru.sberbank.pprb.sbbol.global_search.engine.query.EntityQuery;
 import ru.sberbank.pprb.sbbol.global_search.engine.query.QueryResult;
@@ -16,8 +15,6 @@ import ru.sberbank.pprb.sbbol.global_search.search.service.SearchService;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.FutureTask;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
