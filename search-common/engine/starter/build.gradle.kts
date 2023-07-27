@@ -1,7 +1,8 @@
 plugins {
+    id("dependency-locking-conventions")
     id("jacoco-conventions")
-    id("repositories-conventions")
     id("java-conventions")
+    id("repositories-conventions")
     id("org.springframework.boot") apply false
 }
 dependencies {
