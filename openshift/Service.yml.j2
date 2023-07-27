@@ -1,4 +1,6 @@
 ---
+{% for service in service_mapping %}
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -12,9 +14,9 @@ metadata:
     # Аннотация для указания порта подключения к HTTP endpoint с метриками
 {# TODO: нужно ли итерироваться здесь? пока хардкод 8080 #}
     prometheus.io.port: "8080"
-  name: {{ os_project.name }}-task
+  name: {{ service.name }}
   labels:
-    app: {{ os_project.name }}-task-{{ suffix_app_label }}
+    app: {{ service.name }}-{{ suffix_app_label }}
 spec:
   ports:
 {% for port in os_project.ports %}
@@ -24,6 +26,7 @@ spec:
       targetPort: {{ port.targetPort | default(port.port) }}
 {% endfor %}
   selector:
-    app: {{ os_project.name }}-task-{{ suffix_app_label }}
+    app: {{ service.name }}-{{ suffix_app_label }}
   type: ClusterIP
   sessionAffinity: None
+{% endfor %}
