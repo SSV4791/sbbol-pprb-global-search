@@ -83,7 +83,7 @@ spec:
       containers:
         - name: app
 # app_docker_image проставляется при сборке архива с конфигами
-          image: {{ registry_area_app | default("registry.ca.sbrf.ru/sigma") }}/{app_search_docker_image}
+          image: {{ registry_area_app | default("registry.ca.sbrf.ru/sigma") }}/{app_sink_docker_image}
           securityContext:
             readOnlyRootFilesystem: true
           imagePullPolicy: Always
@@ -132,7 +132,7 @@ spec:
           readinessProbe:
             failureThreshold: 3
             httpGet:
-              path: /actuator/health/readiness
+              path: /sink/actuator/health/readiness
               port: 8080
               scheme: HTTP
             periodSeconds: 30
@@ -142,7 +142,7 @@ spec:
           livenessProbe:
             failureThreshold: 3
             httpGet:
-              path: /actuator/health/liveness
+              path: /sink/actuator/health/liveness
               port: 8080
               scheme: HTTP
             periodSeconds: 30

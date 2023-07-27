@@ -101,7 +101,7 @@ spec:
             - name: JAVA_TOOL_OPTIONS     #автоматическое прокидывание JVM параметров (без явного указания в entrypoint.sh)
               value: >-
                 -Dlogging.config=/deployments/config/logback/logback.xml
-                -Dspring.config.location=file:/deployments/config/application.properties,file:/deployments/credentials/main_db/secret.properties,file:/deployments/credentials/si_db/secret.properties,file:/deployments/config/app_journal/appJournal.properties
+                -Dspring.config.location=file:/deployments/config/application.properties,file:/deployments/config/app_journal/appJournal.properties
                 {{ os_project.app.javaToolOptions | default('') }}
           ports:
             - containerPort: 8080
@@ -118,12 +118,6 @@ spec:
             - name: logsshare
               mountPath: /app/logs
 {% if secman.openshift.enabled is defined and not secman.openshift.enabled | bool %}
-            - name: main-db-secret
-              mountPath: /deployments/credentials/main_db
-              readOnly: true
-            - name: standin-db-secret
-              mountPath: /deployments/credentials/si_db
-              readOnly: true
             - name: app-journal-config
               mountPath: /deployments/config/app_journal
               readOnly: true
@@ -138,7 +132,7 @@ spec:
           readinessProbe:
             failureThreshold: 3
             httpGet:
-              path: /actuator/health/readiness
+              path: /admin/actuator/health/readiness
               port: 8080
               scheme: HTTP
             periodSeconds: 30
@@ -148,7 +142,7 @@ spec:
           livenessProbe:
             failureThreshold: 3
             httpGet:
-              path: /actuator/health/liveness
+              path: /admin/actuator/health/liveness
               port: 8080
               scheme: HTTP
             periodSeconds: 30
@@ -233,15 +227,6 @@ spec:
         - name: logsshare
           emptyDir: {}
 {% if secman.openshift.enabled is defined and not secman.openshift.enabled | bool %}
-        - name: main-db-secret
-          secret:
-            secretName: pgdb-main-secret
-            defaultMode: 0400
-        - name: standin-db-secret
-          secret:
-            secretName: pgdb-si-secret
-            defaultMode: 0400
-            optional: true
         - name: app-journal-config
           secret:
             secretName: {{ app_journal.secret }}
