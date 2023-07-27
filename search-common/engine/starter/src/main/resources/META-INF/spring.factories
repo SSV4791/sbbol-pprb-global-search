@@ -1,0 +1,1 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=ru.sberbank.pprb.sbbol.global_search.engine.config.SearchEngineCoreImplConfiguration

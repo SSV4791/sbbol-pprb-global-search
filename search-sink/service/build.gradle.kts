@@ -1,5 +1,5 @@
 dependencies {
-    implementation(project(":search-common:engine-core-api"))
+    implementation(project(":search-common:engine:starter"))
     implementation(project(":search-sink:api"))
 }
 description =
