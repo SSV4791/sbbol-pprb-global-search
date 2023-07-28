@@ -1,5 +1,6 @@
 package ru.sberbank.pprb.sbbol.global_search.facade.query.condition;
 
+import lombok.Value;
 import org.opensearch.index.query.QueryBuilder;
 import org.opensearch.index.query.QueryBuilders;
 
@@ -8,20 +9,17 @@ import java.util.Collection;
 /**
  * Условие соответствия списку идентификаторов
  */
-public final class IdsCondition implements Condition {
+@Value
+public class IdsCondition implements Condition {
 
     /**
      * Значения идентификатора, удовлетворяющие условию
      */
-    private final String[] ids;
-
-    IdsCondition(Collection<String> ids) {
-        this.ids = ids.toArray(new String[0]);
-    }
+    Collection<String>  ids;
 
     @Override
     public QueryBuilder toQueryBuilder() {
-        return QueryBuilders.idsQuery().addIds(ids);
+        return QueryBuilders.idsQuery().addIds(ids.toArray(new String[0]));
     }
 
     @Override

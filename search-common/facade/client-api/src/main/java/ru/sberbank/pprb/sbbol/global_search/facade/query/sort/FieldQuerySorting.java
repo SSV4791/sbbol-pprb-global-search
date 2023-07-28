@@ -1,33 +1,28 @@
 package ru.sberbank.pprb.sbbol.global_search.facade.query.sort;
 
 
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.opensearch.search.sort.FieldSortBuilder;
 import org.opensearch.search.sort.SortBuilder;
 
 /**
  * Условие сортировки по полю
  */
+@RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class FieldQuerySorting implements QuerySorting {
 
     /**
      * Наименование поля
      */
-    private final String fieldName;
+    String fieldName;
 
     /**
      * Порядок сортировки
      */
-    private final SortOrder order;
-
-    public FieldQuerySorting(String fieldName) {
-        this.fieldName = fieldName;
-        this.order = SortOrder.ASC;
-    }
-
-    public FieldQuerySorting(String fieldName, SortOrder order) {
-        this.fieldName = fieldName;
-        this.order = order;
-    }
+    SortOrder order;
 
     @Override
     public SortBuilder<?> toSortBuilder() {

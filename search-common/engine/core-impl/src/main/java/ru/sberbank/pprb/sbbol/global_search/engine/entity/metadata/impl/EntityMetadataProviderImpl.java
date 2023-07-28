@@ -1,5 +1,6 @@
 package ru.sberbank.pprb.sbbol.global_search.engine.entity.metadata.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.sberbank.pprb.sbbol.global_search.engine.entity.metadata.EntityMetadataHolder;
@@ -15,6 +16,7 @@ import java.util.concurrent.ConcurrentMap;
 /**
  * Реализация провайдера метаданных классов сущностей, используемых в поисковом сервисе
  */
+@Slf4j
 public class EntityMetadataProviderImpl implements EntityMetadataProvider {
 
     private final EntityMetadataLoader metadataLoader;
@@ -27,8 +29,6 @@ public class EntityMetadataProviderImpl implements EntityMetadataProvider {
      * в качестве ключа выступает объект класса сущности
      */
     private final ConcurrentMap<Class<?>, EntityMetadataHolder<?>> metadataStore = new ConcurrentHashMap<>();
-
-    private static final Logger log = LoggerFactory.getLogger(EntityMetadataProviderImpl.class);
 
     public EntityMetadataProviderImpl(EntityMetadataLoader metadataLoader, SearchableEntitiesLocationScanner locationScanner) {
         this.metadataLoader = metadataLoader;

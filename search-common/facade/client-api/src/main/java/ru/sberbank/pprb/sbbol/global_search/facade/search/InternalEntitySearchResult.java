@@ -1,5 +1,6 @@
 package ru.sberbank.pprb.sbbol.global_search.facade.search;
 
+import lombok.Value;
 import ru.sberbank.pprb.sbbol.global_search.facade.entity.InternalEntityHolder;
 
 import java.util.ArrayList;
@@ -12,22 +13,23 @@ import java.util.Objects;
  *
  * @param <T> тип объекта сущности
  */
+@Value
 public class InternalEntitySearchResult<T> {
 
     /**
      * Класс объекта сущности
      */
-    private final Class<T> entityClass;
+    Class<T> entityClass;
 
     /**
      * Коллекция объектов сущности - результатов запроса
      */
-    private final Collection<InternalEntityHolder<T>> entities;
+    Collection<InternalEntityHolder<T>> entities;
 
     /**
      * Продолжительность выполнения запроса
      */
-    private final long duration;
+    long duration;
 
     /**
      * Общее количество результатов запроса
@@ -35,12 +37,12 @@ public class InternalEntitySearchResult<T> {
      * Коллекция результатов запроса содержит только {@link InternalEntitySearchQuery#maxResultCount} результатов,
      * в то время как тут указывается общее количество найденных результатов
      */
-    private final long totalResultCount;
+    long totalResultCount;
 
     /**
      * Ошибка в ходе выполнения запроса
      */
-    private final Exception searchFailure;
+    Exception searchFailure;
 
     private InternalEntitySearchResult(Builder<T> builder) {
         entityClass = builder.entityClass;
@@ -84,37 +86,6 @@ public class InternalEntitySearchResult<T> {
      */
     public static <T> Builder<T> builder(Class<T> entityClass) {
         return new Builder<>(entityClass);
-    }
-
-    public Class<T> getEntityClass() {
-        return entityClass;
-    }
-
-    public Collection<InternalEntityHolder<T>> getEntities() {
-        return entities;
-    }
-
-    public long getDuration() {
-        return duration;
-    }
-
-    public long getTotalResultCount() {
-        return totalResultCount;
-    }
-
-    public Exception getSearchFailure() {
-        return searchFailure;
-    }
-
-    @Override
-    public String toString() {
-        return "InternalEntitySearchResult{" +
-            "entityClass=" + entityClass +
-            ", entities=" + entities +
-            ", duration=" + duration +
-            ", totalResultCount=" + totalResultCount +
-            ", searchFailure=" + searchFailure +
-            '}';
     }
 
     /**

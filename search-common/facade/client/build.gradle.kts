@@ -9,6 +9,9 @@ plugins {
 dependencies {
     implementation(project(":search-common:facade:client-api"))
 
+    annotationProcessor(liveLibs.lombok)
+    compileOnly(liveLibs.lombok)
+
     implementation(platform(liveLibs.spring.boot.dependencies))
 
     implementation(liveLibs.bundles.opensearch)

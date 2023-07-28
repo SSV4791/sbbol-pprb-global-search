@@ -1,7 +1,6 @@
 package ru.sberbank.pprb.sbbol.global_search.engine.index;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import ru.sberbank.pprb.sbbol.global_search.engine.entity.metadata.EntityMetadataHolder;
 import ru.sberbank.pprb.sbbol.global_search.engine.entity.metadata.EntityMetadataProvider;
 import ru.sberbank.pprb.sbbol.global_search.facade.OpenSearchIndexApiFacade;
@@ -11,13 +10,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.function.Predicate;
 
+@Slf4j
 public class IndexLifecycleServiceImpl implements IndexLifecycleService {
 
     private final OpenSearchIndexApiFacade indexApiFacade;
 
     private final EntityMetadataProvider metadataProvider;
-
-    private static final Logger log = LoggerFactory.getLogger(IndexLifecycleServiceImpl.class);
 
     public IndexLifecycleServiceImpl(OpenSearchIndexApiFacade indexApiFacade, EntityMetadataProvider metadataProvider) {
         this.indexApiFacade = indexApiFacade;

@@ -1,5 +1,6 @@
 package ru.sberbank.pprb.sbbol.global_search.facade.search;
 
+import lombok.Value;
 import ru.sberbank.pprb.sbbol.global_search.facade.query.condition.Condition;
 import ru.sberbank.pprb.sbbol.global_search.facade.query.sort.QuerySorting;
 
@@ -13,57 +14,58 @@ import java.util.Objects;
  *
  * @param <T> тип объекта сущности
  */
+@Value
 public class InternalEntitySearchQuery<T> {
 
     /**
      * Класс объектов запрашиваемой сущности
      */
-    private final Class<T> entityClass;
+    Class<T> entityClass;
 
     /**
      * Наименование сущности
      */
-    private final String entityName;
+    String entityName;
 
     /**
      * Коллекция значений routing'а запросов
      */
-    private final Collection<String> routingValues;
+    Collection<String> routingValues;
 
     /**
      * Строка запроса
      */
-    private final String queryString;
+    String queryString;
 
     /**
      * Коллекция условий поискового запроса
      */
-    private final Collection<Condition> conditions;
+    Collection<Condition> conditions;
 
     /**
      * Коллекция условий сортировки поискового запроса
      */
-    private final Collection<QuerySorting> querySorting;
+    Collection<QuerySorting> querySorting;
 
     /**
      * Коллекция наименований полей сущности, доступных для поиска по ним
      */
-    private final Collection<String> queryableFields;
+    Collection<String> queryableFields;
 
     /**
      * Коллекция значений после которых будет выполняться поиск
      */
-    private final Collection<Object> searchAfterValues;
+    Collection<Object> searchAfterValues;
 
     /**
      * Максимальное количество результатов, возвращаемых запросом
      */
-    private final int maxResultCount;
+    int maxResultCount;
 
     /**
      * Индекс позиции с которой необходимо начать поиск
      */
-    private final int startSearchFrom;
+    int startSearchFrom;
 
     private InternalEntitySearchQuery(Builder<T> builder) {
         entityClass = builder.entityClass;
@@ -92,60 +94,6 @@ public class InternalEntitySearchQuery<T> {
      */
     public static <T> Builder<T> builder(Class<T> entityClass, String entityName) {
         return new Builder<>(entityClass, entityName);
-    }
-
-    public Class<T> getEntityClass() {
-        return entityClass;
-    }
-
-    public String getEntityName() {
-        return entityName;
-    }
-
-    public Collection<String> getRoutingValues() {
-        return routingValues;
-    }
-
-    public String getQueryString() {
-        return queryString;
-    }
-
-    public int getMaxResultCount() {
-        return maxResultCount;
-    }
-
-    public int getStartSearchFrom() {
-        return startSearchFrom;
-    }
-
-    public Collection<Condition> getConditions() {
-        return conditions;
-    }
-
-    public Collection<QuerySorting> getQuerySorting() {
-        return querySorting;
-    }
-
-    public Collection<String> getQueryableFields() {
-        return queryableFields;
-    }
-
-    public Collection<Object> getSearchAfterValues() { return searchAfterValues; }
-
-    @Override
-    public String toString() {
-        return "InternalEntitySearchQuery{" +
-            "entityClass=" + entityClass +
-            ", entityName='" + entityName + '\'' +
-            ", routingValues=" + routingValues +
-            ", queryString='" + queryString + '\'' +
-            ", conditions=" + conditions +
-            ", sorting=" + querySorting +
-            ", queryableFields=" + queryableFields +
-            ", searchAfterValues=" + searchAfterValues +
-            ", maxResultCount=" + maxResultCount +
-            ", startSearchFrom=" + startSearchFrom +
-            '}';
     }
 
     /**

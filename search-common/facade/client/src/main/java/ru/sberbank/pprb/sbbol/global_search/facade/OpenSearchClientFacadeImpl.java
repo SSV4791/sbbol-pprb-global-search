@@ -1,6 +1,10 @@
 package ru.sberbank.pprb.sbbol.global_search.facade;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.opensearch.OpenSearchStatusException;
 import org.opensearch.action.delete.DeleteRequest;
 import org.opensearch.action.delete.DeleteResponse;
@@ -28,8 +32,6 @@ import org.opensearch.rest.RestStatus;
 import org.opensearch.search.SearchHit;
 import org.opensearch.search.SearchHits;
 import org.opensearch.search.builder.SearchSourceBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
 import ru.sberbank.pprb.sbbol.global_search.facade.entity.InternalEntityHolder;
 import ru.sberbank.pprb.sbbol.global_search.facade.query.SearchFilterTokenExtractor;
@@ -47,23 +49,16 @@ import java.util.List;
  * Реализация сервиса взаимодействия с хранилищем OpenSearch.
  * Использует OpenSearch Java High Level Rest Client
  */
+@Slf4j
+@RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class OpenSearchClientFacadeImpl implements OpenSearchClientFacade {
 
-    private final RestHighLevelClient restClient;
+    RestHighLevelClient restClient;
 
-    private final SearchFilterTokenExtractor tokenExtractor;
+    SearchFilterTokenExtractor tokenExtractor;
 
-    private final ObjectMapper objectMapper;
-
-    private static final Logger log = LoggerFactory.getLogger(OpenSearchClientFacadeImpl.class);
-
-    public OpenSearchClientFacadeImpl(RestHighLevelClient restClient,
-                                      SearchFilterTokenExtractor tokenExtractor,
-                                      ObjectMapper objectMapper) {
-        this.restClient = restClient;
-        this.tokenExtractor = tokenExtractor;
-        this.objectMapper = objectMapper;
-    }
+    ObjectMapper objectMapper;
 
     @Override
     public Collection<InternalEntitySearchResult<?>> findAll(List<InternalEntitySearchQuery<?>> entitySearchQueries) throws IOException {

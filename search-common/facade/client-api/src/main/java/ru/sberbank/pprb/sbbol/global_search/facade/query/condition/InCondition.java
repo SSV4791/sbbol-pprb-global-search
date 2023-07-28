@@ -1,5 +1,6 @@
 package ru.sberbank.pprb.sbbol.global_search.facade.query.condition;
 
+import lombok.Value;
 import org.opensearch.index.query.QueryBuilder;
 import org.opensearch.index.query.QueryBuilders;
 
@@ -11,17 +12,18 @@ import java.util.Collection;
  *
  * @param <T> тип значений условия
  */
-public final class InCondition<T> implements Condition {
+@Value
+public class InCondition<T> implements Condition {
 
     /**
      * Наименование поля, на которое накладывается условие
      */
-    private final String fieldName;
+    String fieldName;
 
     /**
      * Значения поля, удовлетворяющие условию
      */
-    private final Collection<T> values;
+    Collection<T> values;
 
     InCondition(String fieldName, Collection<? extends T> values) {
         this.fieldName = fieldName;

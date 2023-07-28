@@ -1,7 +1,6 @@
 package ru.sberbank.pprb.sbbol.global_search.engine.entity;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.CollectionUtils;
 import ru.sberbank.pprb.sbbol.global_search.engine.entity.metadata.EntityMetadataHolder;
 import ru.sberbank.pprb.sbbol.global_search.engine.entity.metadata.EntityMetadataProvider;
@@ -27,13 +26,18 @@ import ru.sberbank.pprb.sbbol.global_search.facade.search.InternalEntitySearchRe
 import java.beans.PropertyDescriptor;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
  * Реализация сервиса взаимодействия с поисковым хранилищем
  */
+@Slf4j
 public class SearchableEntityServiceImpl implements SearchableEntityService {
 
     private final OpenSearchClientFacade facade;
@@ -43,8 +47,6 @@ public class SearchableEntityServiceImpl implements SearchableEntityService {
     private final EntityMetadataProvider metadataProvider;
 
     private final ConditionMapper conditionMapper;
-
-    private static final Logger log = LoggerFactory.getLogger(SearchableEntityServiceImpl.class);
 
     public SearchableEntityServiceImpl(OpenSearchClientFacade facade, EntityToInternalEntityHolderConverter entityHolderConverter,
                                        EntityMetadataProvider metadataProvider, ConditionMapper conditionMapper) {

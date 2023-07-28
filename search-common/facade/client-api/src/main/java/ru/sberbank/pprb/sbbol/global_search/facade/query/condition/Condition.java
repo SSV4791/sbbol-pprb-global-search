@@ -126,7 +126,7 @@ public interface Condition {
      *
      * @param nestedConditions условия соответствия
      */
-    static AndCondition and(Condition... nestedConditions) {
+    static AndCondition and(Collection<Condition> nestedConditions) {
         return new AndCondition(nestedConditions);
     }
 
@@ -135,7 +135,7 @@ public interface Condition {
      *
      * @param nestedConditions условия соответствия
      */
-    static OrCondition or(Condition... nestedConditions) {
+    static OrCondition or(Collection<Condition> nestedConditions) {
         return new OrCondition(nestedConditions);
     }
 }

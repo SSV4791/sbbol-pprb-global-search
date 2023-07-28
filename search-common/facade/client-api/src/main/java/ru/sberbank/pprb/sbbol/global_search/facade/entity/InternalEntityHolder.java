@@ -1,5 +1,7 @@
 package ru.sberbank.pprb.sbbol.global_search.facade.entity;
 
+import lombok.Value;
+
 import java.util.Objects;
 
 /**
@@ -7,37 +9,38 @@ import java.util.Objects;
  *
  * @param <T> тип объекта сущности
  */
+@Value
 public class InternalEntityHolder<T> {
 
     /**
      * объект сущности
      */
-    private final T entity;
+    T entity;
 
     /**
      * класс объекта сущности
      */
-    private final Class<T> entityClass;
+    Class<T> entityClass;
 
     /**
      * наименование сущности
      */
-    private final String entityName;
+    String entityName;
 
     /**
      * наименование поискового индекса сущности
      */
-    private final String indexName;
+    String indexName;
 
     /**
      * идентификатор сущности
      */
-    private final String entityId;
+    String entityId;
 
     /**
      * значение поля routing'а
      */
-    private final String routingValue;
+    String routingValue;
 
     /**
      * Последовательный номер операции в OpenSearch
@@ -45,7 +48,7 @@ public class InternalEntityHolder<T> {
      * @see <a href="https://www.elastic.co/guide/en/elasticsearch/reference/7.x/optimistic-concurrency-control.html">
      * OpenSearch optimistic concurrency control</a>
      */
-    private final Long seqNo;
+    Long seqNo;
 
     /**
      * Primary шард OpenSearch, координирующий операцию
@@ -53,17 +56,17 @@ public class InternalEntityHolder<T> {
      * @see <a href="https://www.elastic.co/guide/en/elasticsearch/reference/7.x/optimistic-concurrency-control.html">
      * OpenSearch optimistic concurrency control</a>
      */
-    private final Long primaryTerm;
+    Long primaryTerm;
 
     /**
      * Класс сущности, внешней по отношению к данной (для вложенных сущностей)
      */
-    private final Class<?> outerEntityClass;
+    Class<?> outerEntityClass;
 
     /**
      * Идентификатор сущности, внешней по отношению к данной
      */
-    private final String outerEntityId;
+    String outerEntityId;
 
     private InternalEntityHolder(Builder<T> builder) {
         entityClass = builder.entityClass;
@@ -105,62 +108,6 @@ public class InternalEntityHolder<T> {
             .primaryTerm(holder.getPrimaryTerm())
             .outerEntityClass(holder.getOuterEntityClass())
             .outerEntityId(holder.getOuterEntityId());
-    }
-
-    public T getEntity() {
-        return entity;
-    }
-
-    public Class<T> getEntityClass() {
-        return entityClass;
-    }
-
-    public String getEntityName() {
-        return entityName;
-    }
-
-    public String getEntityId() {
-        return entityId;
-    }
-
-    public String getRoutingValue() {
-        return routingValue;
-    }
-
-    public Long getSeqNo() {
-        return seqNo;
-    }
-
-    public Long getPrimaryTerm() {
-        return primaryTerm;
-    }
-
-    public String getIndexName() {
-        return indexName;
-    }
-
-    public Class<?> getOuterEntityClass() {
-        return outerEntityClass;
-    }
-
-    public String getOuterEntityId() {
-        return outerEntityId;
-    }
-
-    @Override
-    public String toString() {
-        return "InternalEntityHolder{" +
-            "entity=" + entity +
-            ", entityClass=" + entityClass +
-            ", entityName='" + entityName + '\'' +
-            ", indexName='" + indexName + '\'' +
-            ", entityId='" + entityId + '\'' +
-            ", routingValue='" + routingValue + '\'' +
-            ", seqNo=" + seqNo +
-            ", primaryTerm=" + primaryTerm +
-            ", outerEntityClass=" + outerEntityClass +
-            ", outerEntityId='" + outerEntityId + '\'' +
-            '}';
     }
 
     /**
