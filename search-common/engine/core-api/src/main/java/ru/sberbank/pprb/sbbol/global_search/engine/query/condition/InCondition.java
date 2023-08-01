@@ -1,5 +1,7 @@
 package ru.sberbank.pprb.sbbol.global_search.engine.query.condition;
 
+import lombok.Value;
+
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -8,36 +10,21 @@ import java.util.Collection;
  *
  * @param <T> тип значений условия
  */
-public final class InCondition<T> implements Condition {
+@Value
+public class InCondition<T> implements Condition {
 
     /**
      * Наименование поля, на которое накладывается условие
      */
-    private final String fieldName;
+    String fieldName;
 
     /**
      * Значения поля, удовлетворяющие условию
      */
-    private final Collection<T> values;
+    Collection<T> values;
 
     public InCondition(String fieldName, Collection<? extends T> values) {
         this.fieldName = fieldName;
         this.values = new ArrayList<>(values);
-    }
-
-    public String getFieldName() {
-        return fieldName;
-    }
-
-    public Collection<T> getValues() {
-        return values;
-    }
-
-    @Override
-    public String toString() {
-        return "InCondition{" +
-            "fieldName='" + fieldName + '\'' +
-            ", values=" + values +
-            '}';
     }
 }

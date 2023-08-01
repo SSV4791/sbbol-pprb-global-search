@@ -9,6 +9,9 @@ dependencies {
     implementation(project(":search-common:facade:starter"))
     implementation(project(":search-common:search-core-api"))
 
+    annotationProcessor(liveLibs.lombok)
+    compileOnly(liveLibs.lombok)
+
     implementation(platform(liveLibs.spring.boot.dependencies))
 
     implementation(liveLibs.commons.lang3)

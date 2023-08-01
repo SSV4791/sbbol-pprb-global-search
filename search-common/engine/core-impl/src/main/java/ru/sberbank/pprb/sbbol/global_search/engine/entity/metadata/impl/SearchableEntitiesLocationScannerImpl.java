@@ -1,5 +1,6 @@
 package ru.sberbank.pprb.sbbol.global_search.engine.entity.metadata.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.reflections.Configuration;
 import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
@@ -24,11 +25,10 @@ import java.util.stream.Collectors;
 /**
  * Реализация сканера классов сущностей, доступных в поисковом сервисе
  */
+@Slf4j
 public class SearchableEntitiesLocationScannerImpl implements SearchableEntitiesLocationScanner {
 
     private final List<SearchableEntitiesLocationHolder> locationHolders;
-
-    private static final Logger log = LoggerFactory.getLogger(SearchableEntitiesLocationScannerImpl.class);
 
     public SearchableEntitiesLocationScannerImpl(Collection<SearchableEntitiesLocationHolder> locationHolders) {
         this.locationHolders = Collections.unmodifiableList(new ArrayList<>(locationHolders));

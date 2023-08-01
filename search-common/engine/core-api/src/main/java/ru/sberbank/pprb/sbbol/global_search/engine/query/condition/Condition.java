@@ -119,29 +119,11 @@ public interface Condition {
     }
 
     /**
-     * Получить условие соответствия всем переданным условиям
-     *
-     * @param nestedConditions условия соответствия
-     */
-    static AndCondition and(Condition... nestedConditions) {
-        return new AndCondition(nestedConditions);
-    }
-
-    /**
      * Получить условие соответствия хотя бы одному из переданных условий
      *
      * @param nestedConditions условия соответствия
      */
     static OrCondition or(Collection<Condition> nestedConditions) {
-        return new OrCondition(nestedConditions);
-    }
-
-    /**
-     * Получить условие соответствия хотя бы одному из переданных условий
-     *
-     * @param nestedConditions условия соответствия
-     */
-    static OrCondition or(Condition... nestedConditions) {
         return new OrCondition(nestedConditions);
     }
 }

@@ -1,21 +1,22 @@
 package ru.sberbank.pprb.sbbol.global_search.facade.query.sort;
 
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.opensearch.search.sort.ScoreSortBuilder;
 import org.opensearch.search.sort.SortBuilder;
 
 /**
  * Условие сортировки по весам. Если не указан не один тип сортировки применяется по умолчанию
  */
+@RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class ScoreQuerySorting implements QuerySorting {
 
     /**
      * Порядок сортировки
      */
-    private final SortOrder order;
-
-    public ScoreQuerySorting(SortOrder order) {
-        this.order = order;
-    }
+    SortOrder order;
 
     @Override
     public SortBuilder<?> toSortBuilder() {

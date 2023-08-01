@@ -1,9 +1,8 @@
 package ru.sberbank.pprb.sbbol.global_search.engine.entity.metadata.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import ru.sberbank.pprb.sbbol.global_search.core.entity.EntityId;
 import ru.sberbank.pprb.sbbol.global_search.core.entity.EntityIdMapperRef;
 import ru.sberbank.pprb.sbbol.global_search.core.entity.ExternalVersion;
@@ -45,14 +44,13 @@ import java.util.stream.Stream;
  * Реализация загрузчика метаданных классов сущностей, используемых в поисковом сервисе.
  * Загружает метаданные сущностей. отмеченных аннотацией {@link SearchableEntity} или {@link NestedEntity}
  */
+@Slf4j
 public class EntityMetadataLoaderImpl implements EntityMetadataLoader {
 
     private final BeanProvider beanProvider;
 
     private static final Collection<Class<?>> EXTERNAL_VERSION_PROPERTY_ALLOWED_CLASSES =
         Set.of(Integer.class, int.class, Long.class, long.class, Short.class, short.class, Byte.class, byte.class);
-
-    private static final Logger log = LoggerFactory.getLogger(EntityMetadataLoaderImpl.class);
 
     public EntityMetadataLoaderImpl(BeanProvider beanProvider) {
         this.beanProvider = beanProvider;

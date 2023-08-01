@@ -1,5 +1,9 @@
 package ru.sberbank.pprb.sbbol.global_search.facade;
 
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.opensearch.OpenSearchException;
 import org.opensearch.action.admin.indices.alias.get.GetAliasesRequest;
 import org.opensearch.action.admin.indices.delete.DeleteIndexRequest;
@@ -7,22 +11,16 @@ import org.opensearch.client.GetAliasesResponse;
 import org.opensearch.client.RequestOptions;
 import org.opensearch.client.RestHighLevelClient;
 import org.opensearch.rest.RestStatus;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Collection;
 
-
+@Slf4j
+@RequiredArgsConstructor
+@FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class OpenSearchIndexApiFacadeImpl implements OpenSearchIndexApiFacade {
 
-    private final RestHighLevelClient restClient;
-
-    private static final Logger log = LoggerFactory.getLogger(OpenSearchIndexApiFacadeImpl.class);
-
-    public OpenSearchIndexApiFacadeImpl(RestHighLevelClient restClient) {
-        this.restClient = restClient;
-    }
+    RestHighLevelClient restClient;
 
     @Override
     public  Collection<String> indexNames(String entityName) throws IOException {

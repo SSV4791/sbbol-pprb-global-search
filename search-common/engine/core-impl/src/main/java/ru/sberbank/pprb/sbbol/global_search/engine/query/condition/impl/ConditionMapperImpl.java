@@ -5,6 +5,7 @@ import ru.sberbank.pprb.sbbol.global_search.engine.query.condition.*;
 
 import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static ru.sberbank.pprb.sbbol.global_search.facade.query.condition.Condition.*;
 
@@ -59,14 +60,14 @@ public class ConditionMapperImpl implements ConditionMapper {
                 AndCondition condition = (AndCondition) source;
                 return and(condition.getNestedConditions().stream()
                     .map(this::map)
-                    .toArray(ru.sberbank.pprb.sbbol.global_search.facade.query.condition.Condition[]::new)
+                    .collect(Collectors.toList())
                 );
             })
             .put(OrCondition.class, source -> {
                 OrCondition condition = (OrCondition) source;
                 return or(condition.getNestedConditions().stream()
                     .map(this::map)
-                    .toArray(ru.sberbank.pprb.sbbol.global_search.facade.query.condition.Condition[]::new)
+                    .collect(Collectors.toList())
                 );
             })
             .build();

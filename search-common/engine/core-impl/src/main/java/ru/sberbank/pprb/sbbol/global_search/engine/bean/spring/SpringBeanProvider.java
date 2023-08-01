@@ -1,5 +1,6 @@
 package ru.sberbank.pprb.sbbol.global_search.engine.bean.spring;
 
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -11,11 +12,10 @@ import org.springframework.context.ApplicationContextAware;
 import ru.sberbank.pprb.sbbol.global_search.engine.bean.BeanHolder;
 import ru.sberbank.pprb.sbbol.global_search.engine.bean.BeanProvider;
 
+@Slf4j
 public class SpringBeanProvider implements BeanProvider, ApplicationContextAware {
 
     private ApplicationContext applicationContext;
-
-    private static final Logger log = LoggerFactory.getLogger(SpringBeanProvider.class);
 
     @Override
     public <T> BeanHolder<T> getBean(Class<? extends T> clazz) {

@@ -6,6 +6,9 @@ plugins {
 dependencies {
     api(project(":search-common:search-core-api"))
 
+    annotationProcessor(liveLibs.lombok)
+    compileOnly(liveLibs.lombok)
+
     implementation(liveLibs.jackson.annotations)
 }
 

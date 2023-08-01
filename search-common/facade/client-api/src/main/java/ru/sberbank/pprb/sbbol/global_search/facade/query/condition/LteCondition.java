@@ -1,5 +1,6 @@
 package ru.sberbank.pprb.sbbol.global_search.facade.query.condition;
 
+import lombok.Value;
 import org.opensearch.index.query.QueryBuilder;
 import org.opensearch.index.query.QueryBuilders;
 
@@ -8,23 +9,19 @@ import org.opensearch.index.query.QueryBuilders;
  *
  * @param <T> тип значения поля
  */
+@Value
 public class LteCondition<T> implements Condition {
 
     /**
      * Наименование поля, на которое накладывается условие
      */
-    private final String fieldName;
+    String fieldName;
 
     /**
      * Значение поля, удовлетворяющее условию
      * (верхняя граница, включительно, выборки)
      */
-    private final T to;
-
-    LteCondition(String fieldName, T to) {
-        this.fieldName = fieldName;
-        this.to = to;
-    }
+    T to;
 
     @Override
     public QueryBuilder toQueryBuilder() {
