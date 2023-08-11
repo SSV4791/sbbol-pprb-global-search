@@ -8,7 +8,7 @@ metadata:
   labels:
     app: {{ os_project.name }}-sink-{{ suffix_app_label }}
     version: {{ version | default('v1') }}
-    app.kubernetes.io/part-of: {{ os_project.name }}
+    app.kubernetes.io/part-of: istio
 spec:
   strategy:
     type: RollingUpdate
@@ -57,6 +57,7 @@ spec:
 {% endfor %}
 {% endif %}
       labels:
+        secman: application-pod
         app: {{ os_project.name }}-sink-{{ suffix_app_label }}
         version: {{ version | default('v1') }}
 {% if secman.openshift.enabled is not defined or secman.openshift.enabled | bool %}
@@ -101,7 +102,7 @@ spec:
             - name: JAVA_TOOL_OPTIONS     #автоматическое прокидывание JVM параметров (без явного указания в entrypoint.sh)
               value: >-
                 -Dlogging.config=/deployments/config/logback/logback.xml
-                -Dspring.config.location=file:/deployments/config/application.properties,file:/deployments/config/app_journal/appJournal.properties
+                -Dspring.config.location=file:/deployments/config/application.properties,file:/deployments/config/app_journal/appJournal.properties,file:/deployments/config/opensearch_secret/secret.properties
                 {{ os_project.app.javaToolOptions | default('') }}
           ports:
             - containerPort: 8080
@@ -123,6 +124,9 @@ spec:
               readOnly: true
             - name: kafka-ssl-secret
               mountPath: /opt/keystore/kafka
+              readOnly: true
+            - name: opensearch-secret
+              mountPath: /deployments/config/opensearch_secret
               readOnly: true
 {% endif %}
             - name: java-tmp-dir
@@ -159,19 +163,19 @@ spec:
               memory: {{ os_project.requests.memory | default("500Mi") }}
               ephemeral-storage: {{ os_project.requests.ephemeral_storage | default("512Mi") }}
         - name: fluentbit
-# Fluent Bit v1.8.8 https://confluence.delta.sbrf.ru/pages/viewpage.action?pageId=4429253739
-          image: {{ registry_area | default("registry.ca.sbrf.ru/sigma") }}/ci02587203/ci02809205_tengri/fluent-bit@sha256:e38955b3495fe6a40b0506326c1d8458e2f03ad67747406af75f3719678b6036
+          image: {{ registry_area | default("registry.ca.sbrf.ru/sigma") }}/pprb/ci00641491/ci02469991_logger/fluent-bit@sha256:767f20b9246a0209cd3236c2e53419d96df2f4f013ce59d634b1fd581ee8c951
           securityContext:
             readOnlyRootFilesystem: true
           imagePullPolicy: Always
           resources:
             limits:
-              cpu: {{ fluentbit.limits.cpu | default("300m") }}
-              memory: {{ fluentbit.limits.memory | default("512Mi") }}
+              ## TODO: hardcode now, ${fluentBitEnvCluster} and ${MODULE_NAME} and others
+              cpu: {{ fluentbit.limits.cpu | default("50m") }}
+              memory: {{ fluentbit.limits.memory | default("32Mi") }}
               ephemeral-storage: {{ fluentbit.limits.ephemeral_storage | default("2Gi") }}
             requests:
-              cpu: {{ fluentbit.requests.cpu | default("200m") }}
-              memory: {{ fluentbit.requests.memory | default("256Mi") }}
+              cpu: {{ fluentbit.requests.cpu | default("50m") }}
+              memory: {{ fluentbit.requests.memory | default("32Mi") }}
               ephemeral-storage: {{ fluentbit.requests.ephemeral_storage | default("2Gi") }}
           env:
             - name: service
@@ -202,9 +206,8 @@ spec:
             - name: logsshare
               mountPath: /app/logs
             - mountPath: /fluent-bit/etc
-              name: fluentbit
-            - mountPath: '/tmp'
-              name: fluentbit-tmp
+              name: ds-fluentbit
+              readOnly: true
       volumes:
         - name: app-config
           configMap:
@@ -220,10 +223,10 @@ spec:
             items:
               - key: logback.xml
                 path: logback.xml
-        - name: fluentbit
+        - name: ds-fluentbit
           configMap:
             defaultMode: 0400
-            name: cm-fluentbit-{{ canary_suffix }}
+            name: cm-ds-fluentbit-{{ canary_suffix }}
         - name: logsshare
           emptyDir: {}
 {% if secman.openshift.enabled is defined and not secman.openshift.enabled | bool %}
@@ -237,10 +240,13 @@ spec:
             secretName: kafka-ssl-secret
             defaultMode: 0400
             optional: true
+        - name: opensearch-secret
+          secret:
+              secretName: opensearch-secret
+              defaultMode: 0400
+              optional: true
 {% endif %}
         - name: java-tmp-dir
-          emptyDir: {}
-        - name: fluentbit-tmp
           emptyDir: {}
         - name: waiting-secrets
           configMap:
