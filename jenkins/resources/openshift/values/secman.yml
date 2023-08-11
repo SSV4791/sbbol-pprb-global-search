@@ -27,3 +27,10 @@ secman:
           path: CI00908578_CI00986346/A/PPRB/OSH/DEV/KV/ci00908578-edevgen2-pprb-kib-sbbol-dev-test59/secret-appjournalstubsettings
           secrets:
             appJournal.properties: appJournal.properties
+        opensearch-secret:
+          type: file
+          volume:
+            mount: /deployments/config/opensearch_secret
+          path: CI00908578_CI00986346/A/PPRB/OSH/DEV/KV/ci00908578-edevgen2-pprb-kib-sbbol-dev-test59/opensearch-secret
+          secrets:
+            secret.properties: secret.properties

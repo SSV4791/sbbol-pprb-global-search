@@ -151,7 +151,7 @@ release:
   default_values:
     params_branch: master
     params_folder: develop
-    istio_tag: '2.4.1'
+    istio_tag: '2.5'
     reverse_and_publish: false
   qgm:
     repository: maven-distr
