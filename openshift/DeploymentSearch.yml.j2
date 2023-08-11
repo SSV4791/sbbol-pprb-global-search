@@ -242,9 +242,9 @@ spec:
             optional: true
         - name: opensearch-secret
           secret:
-              secretName: opensearch-secret
-              defaultMode: 0400
-              optional: true
+            secretName: opensearch-secret
+            defaultMode: 0400
+            optional: true
 {% endif %}
         - name: java-tmp-dir
           emptyDir: {}
