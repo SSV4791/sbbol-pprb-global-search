@@ -102,7 +102,7 @@ spec:
             - name: JAVA_TOOL_OPTIONS     #автоматическое прокидывание JVM параметров (без явного указания в entrypoint.sh)
               value: >-
                 -Dlogging.config=/deployments/config/logback/logback.xml
-                -Dspring.config.location=file:/deployments/config/application.properties,file:/deployments/config/app_journal/appJournal.properties,file:/deployments/config/opensearch_secret/secret.properties
+                -Dspring.config.location=file:/deployments/config/application.properties,file:/deployments/config/app_journal/appJournal.properties,file:/deployments/config/opensearch/secret.properties
                 {{ os_project.app.javaToolOptions | default('') }}
           ports:
             - containerPort: 8080
