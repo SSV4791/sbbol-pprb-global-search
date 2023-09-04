@@ -6,6 +6,12 @@ plugins {
     id("test-conventions")
 }
 
+tasks {
+    jar {
+        enabled = false
+    }
+}
+
 springBoot {
     mainClass.set("ru.sberbank.pprb.sbbol.global_search.search.SearchRunnerApplication")
 }
@@ -14,7 +20,7 @@ dependencies {
     implementation(platform(liveLibs.spring.boot.dependencies))
 
     implementation(project(":search-common:engine:starter"))
-    implementation(project(":search-common:facade:starter"))
+    implementation(project(":search-common:facade:facade-starter"))
     implementation(project(":search-common:search-core-api"))
     implementation(project(":search-search:api"))
     implementation(project(":search-search:rest"))

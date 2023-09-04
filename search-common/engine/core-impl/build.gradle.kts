@@ -6,7 +6,7 @@ plugins {
 }
 dependencies {
     api(project(":search-common:engine:core-api"))
-    implementation(project(":search-common:facade:starter"))
+    implementation(project(":search-common:facade:facade-starter"))
     implementation(project(":search-common:search-core-api"))
 
     annotationProcessor(liveLibs.lombok)
