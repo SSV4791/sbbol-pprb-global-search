@@ -8,7 +8,7 @@ plugins {
 dependencies {
 
     api(project(":search-common:engine:core-impl"))
-    implementation(project(":search-common:facade:starter"))
+    implementation(project(":search-common:facade:facade-starter"))
 
     implementation(platform(liveLibs.spring.boot.dependencies))
 

@@ -20,7 +20,4 @@ tasks {
     compileJava {
         options.encoding = "UTF-8"
     }
-    jar {
-        enabled = false
-    }
 }

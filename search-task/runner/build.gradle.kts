@@ -6,6 +6,12 @@ plugins {
     id("test-conventions")
 }
 
+tasks {
+    jar {
+        enabled = false
+    }
+}
+
 dependencies {
     implementation(platform(liveLibs.spring.boot.dependencies))
 
