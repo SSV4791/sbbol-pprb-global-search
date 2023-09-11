@@ -33,6 +33,7 @@ pluginManagement {
         }
     }
     plugins {
+        id("com.intershop.gradle.javacc") version "3.0.3"
         id("io.spring.dependency-management") version "1.0.11.RELEASE"
         id("org.openapi.generator") version "5.2.0"
         id("org.springframework.boot") version "2.5.1"
@@ -76,3 +77,4 @@ include(":search-sink:service")
 include(":search-task:rest")
 include(":search-task:runner")
 include(":search-task:service")
+include(":search-updater")
