@@ -1,0 +1,360 @@
+/*
+* Определение грамматики запросов на изменение индексов Elasticsearch
+*/
+
+PARSER_BEGIN(IndexQueryParser)
+package ru.sbrf.sbbol.search.updater.parser;
+
+import org.apache.commons.lang3.StringEscapeUtils;
+import org.springframework.http.HttpMethod;
+import ru.sbrf.sbbol.search.updater.query.IndexQueryParam;
+import ru.sbrf.sbbol.search.updater.query.IndexQuery;
+import ru.sbrf.sbbol.search.updater.query.IndexQueryFileData;
+import ru.sbrf.sbbol.search.updater.query.IndexQueryFileParam;
+
+import java.io.IOException;
+import java.io.StringReader;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+
+public class IndexQueryParser {
+
+    /**
+     *  Строка параметров приходит в виде {@code key=value}
+     */
+    private Map<IndexQueryParam, String> parseParams(String paramStr) throws IOException {
+        Properties p = new Properties();
+        p.load(new StringReader(paramStr));
+        Iterator<Map.Entry<Object, Object>> iterator = p.entrySet().iterator();
+        if (iterator.hasNext()) {
+            Map.Entry<Object, Object> entry = iterator.next();
+            return Collections.singletonMap(IndexQueryParam.valueOf(entry.getKey().toString()), entry.getValue().toString());
+        }
+        return Collections.emptyMap();
+    }
+
+    private Map<IndexQueryFileParam, String> parseGlobalParams(String paramStr) throws IOException {
+            Properties p = new Properties();
+            p.load(new StringReader(paramStr));
+            Iterator<Map.Entry<Object, Object>> iterator = p.entrySet().iterator();
+            if (iterator.hasNext()) {
+                Map.Entry<Object, Object> entry = iterator.next();
+                return Collections.singletonMap(IndexQueryFileParam.valueOf(entry.getKey().toString()), entry.getValue().toString().toLowerCase());
+            }
+            return Collections.emptyMap();
+        }
+}
+
+PARSER_END(IndexQueryParser)
+
+SKIP :
+{
+    " "
+  | "\t"
+  | "\n"
+  | "\r"
+  | "\f"
+}
+
+SPECIAL_TOKEN :
+{
+  < SINGLE_LINE_COMMENT: "//" (~["\n","\r"])* ("\n"|"\r"|"\r\n") >
+| < MULTI_LINE_COMMENT: "/*" (~["*"])* "*" ("*" | (~["*","/"] (~["*"])* "*"))* "/" >
+}
+
+TOKEN : {
+    < GLOBAL_SCRIPT_PARAM: "##" (~["\n","\r"])* ("\n"|"\r"|"\r\n") >
+  | < SCRIPT_PARAM: "#" (~["\n","\r"])* ("\n"|"\r"|"\r\n") >
+}
+
+TOKEN : {
+    <OPEN_BRACE: "{">
+  | <CLOSE_BRACE: "}">
+  | <OPEN_BRACKET: "[">
+  | <CLOSE_BRACKET: "]">
+  | <COMMA: ",">
+  | <COLON: ":">
+  | <TRUE: "true">
+  | <FALSE: "false">
+  | <NULL: "null">
+}
+
+TOKEN : {
+    <INTEGER: <DECIMAL_LITERAL>
+            | "0"
+    >
+  | <FLOATING_POINT: ( ("-")? ( (["0"-"9"])+ "." (["0"-"9"])* (<EXPONENT>)?
+                      | "." (["0"-"9"])+ (<EXPONENT>)?
+                      | (["0"-"9"])+ <EXPONENT>
+                      | (["0"-"9"])+ (<EXPONENT>)?)
+                     )
+    >
+  | <#DECIMAL_LITERAL: ("-")? ["1"-"9"] (["0"-"9"])*>
+  | <#EXPONENT: ["e","E"] (["+","-"])? (["0"-"9"])+>
+}
+
+TOKEN : {
+    < QUOTED_STRING:
+          "\""
+          (   (~["\"","\\"])
+            | ("\\"
+                ( ["n","t","b","r","f","\\","\""] )
+              )
+          )*
+          "\""
+      >
+}
+
+TOKEN : {
+    <METHOD: <PUT>
+           | <POST>
+           | <DELETE>
+    >
+  | <#PUT: "put" | "PUT" | "Put">
+  | <#DELETE: "delete" | "DELETE" | "Delete">
+  | <#POST: "post" | "POST" | "Post">
+}
+
+TOKEN : {
+    <ENDPOINT: (<SLASH>)? <LETTER> (<ENDPOINT_CHARACTER>)*>
+  | <#ENDPOINT_CHARACTER: <LETTER>
+                        | <SLASH>
+                        | <INTEGER>
+                        | "?"
+                        | "-"
+                        | "="
+                        | "&"
+    >
+  | <#LETTER: ["A"-"Z",
+               "_",
+              "a"-"z"]
+    >
+  | <#SLASH: "/">
+}
+
+IndexQueryFileData parse() throws IOException :
+{
+    Collection <IndexQuery> queries = new ArrayList<IndexQuery>();
+    Map<ru.sbrf.sbbol.search.updater.query.IndexQueryFileParam, String> params;
+    IndexQuery query;
+}
+{
+    params = fileParams()
+    query = instruction()
+    {
+        queries.add(query);
+    }
+    (
+        query = instruction()
+        {
+            queries.add(query);
+        }
+    )*
+    <EOF>
+    {
+    return new ru.sbrf.sbbol.search.updater.query.IndexQueryFileData(params, queries);
+}
+}
+
+Map<IndexQueryFileParam, String> fileParams() throws IOException :
+{
+    Token t;
+    Map<IndexQueryFileParam, String> result = new EnumMap<IndexQueryFileParam, String>(IndexQueryFileParam.class);
+}
+{
+    (
+        t = <GLOBAL_SCRIPT_PARAM>
+        {
+            result.putAll(parseGlobalParams(t.image.substring(2).trim()));
+        }
+
+    )*
+    {
+        return result;
+    }
+}
+
+IndexQuery instruction() throws IOException :
+{
+    HttpMethod method;
+    String endpoint;
+    Map<String, Object> jsonBody;
+    Map<ru.sbrf.sbbol.search.updater.query.IndexQueryParam, String> params;
+}
+{
+    params = params()
+    method = method()
+    endpoint = endpoint()
+    jsonBody = jsonBody()
+
+    {
+        return new IndexQuery(method, endpoint, jsonBody, params);
+    }
+}
+
+Map<IndexQueryParam, String> params() throws IOException :
+{
+    Token t;
+    Map<IndexQueryParam, String> result = new EnumMap<IndexQueryParam, String>(IndexQueryParam.class);
+}
+{
+    (
+        t = <SCRIPT_PARAM>
+        {
+            result.putAll(parseParams(t.image.substring(1).trim()));
+        }
+
+    )*
+    {
+        return result;
+    }
+}
+
+HttpMethod method() :
+{
+    Token t;
+}
+{
+    t = <METHOD>
+    {
+        return HttpMethod.valueOf(t.image.toUpperCase());
+    }
+}
+
+String endpoint() :
+{
+    Token t;
+}
+{
+    t = <ENDPOINT>
+    {
+        return t.image;
+    }
+}
+
+Map<String, Object> jsonBody() :
+{
+    String key;
+    Object value;
+    Map<String, Object> result = null;
+}
+{   [
+        (<OPEN_BRACE>
+        {
+            result = new HashMap<String, Object>();
+        }
+        [
+        key = key()
+        <COLON>
+        value = value()
+        {
+            result.put(key, value);
+        }
+        (
+            <COMMA>
+            key = key()
+            <COLON>
+            value = value()
+            {
+                result.put(key, value);
+            }
+        )*
+        ]
+        <CLOSE_BRACE>)
+
+    ]
+    {
+        return result;
+    }
+}
+
+String key() :
+{
+    Token t;
+}
+{
+    t = <QUOTED_STRING>
+    {
+        return t.image.substring(1, t.image.length()-1);
+    }
+}
+
+Object value() :
+{
+    Token t;
+    Object result;
+}
+{
+    (
+        LOOKAHEAD(<OPEN_BRACKET>)
+        result = array()
+        |
+        LOOKAHEAD(<OPEN_BRACE>)
+        result = jsonBody()
+        |
+        t = <QUOTED_STRING>
+        {
+            result = StringEscapeUtils.unescapeJava(t.image.substring(1, t.image.length()-1));
+        }
+        |
+        t = <INTEGER>
+        {
+            result = Integer.valueOf(t.image);
+        }
+        |
+        t = <FLOATING_POINT>
+        {
+            result = new BigDecimal(t.image);
+        }
+        |
+        <TRUE>
+        {
+            result = Boolean.TRUE;
+        }
+        |
+        <FALSE>
+        {
+            result = Boolean.FALSE;
+        }
+        |
+        <NULL>
+        {
+            result = null;
+        }
+    )
+    {
+        return result;
+    }
+}
+
+Object array() :
+{
+    List<Object> result = new ArrayList<Object>();
+    Object value;
+}
+{
+    <OPEN_BRACKET>
+    value = value()
+    {
+        result.add(value);
+    }
+    (
+        <COMMA>
+        value = value()
+        {
+            result.add(value);
+        }
+    )*
+    <CLOSE_BRACKET>
+    {
+        return result;
+    }
+}
