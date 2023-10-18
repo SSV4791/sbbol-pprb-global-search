@@ -3,17 +3,7 @@ docker:
     java: docker-internal.registry-ci.delta.sbrf.ru/ci02281165/ci03069386/bellsoft/liberica-openjdk-rhel7.7-205:15.0.2-10
     postgres: docker-internal.registry-ci.delta.sbrf.ru/ci02281165/ci03069386/postgres:13-alpine
 
-credentials:
-  sonar: CAB-SA-DVO05408-sonar
-  service: CAB-SA-DVO05408-service
-  jenkins: CAB-SA-DVO05408-jenkins
-  nexus_token: CAB-SA-DVO05408-nexus_token
-  checkmarx: CAB-SA-DVO05408-checkmarx
-  openshift_token: CAB-SA-DVO05408-openshift_token
-  registry_delta: CAB-SA-DVO05408-registry_delta
-
 project_name: sbbol-pprb-global-search
-allure_project_id: '138'
 
 pr_check:
   #  vector:
@@ -69,8 +59,14 @@ pr_check:
   build_gradle:
     match:
       files:
-        - 'src/'
         - 'buildSrc/'
+        - 'jenkins/settings.yml'
+        - 'search-admin/'
+        - 'search-common/'
+        - 'search-search/'
+        - 'search-sink/'
+        - 'search-task/'
+        - 'search-updater/'
       regex:
         - '.*\.kts'
         - '.*\.properties'
@@ -86,9 +82,14 @@ pr_check:
   test:
     match:
       files:
-        - 'src/'
         - 'buildSrc/'
         - 'jenkins/settings.yml'
+        - 'search-admin/'
+        - 'search-common/'
+        - 'search-search/'
+        - 'search-sink/'
+        - 'search-task/'
+        - 'search-updater/'
       regex:
         - '.*\.kts'
         - '.*\.properties'
