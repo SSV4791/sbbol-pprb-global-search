@@ -5,6 +5,18 @@ docker:
 
 project_name: sbbol-pprb-global-search
 
+documentation:
+  build:
+    workdir: ''
+    outputdir: docs/build/docs
+    command: >-
+      ./gradlew
+      -PtokenName=${env.TOKEN_NAME}
+      -PtokenPassword=${env.TOKEN_PASSWORD}
+      -Dgradle.wrapperUser=${env.TOKEN_NAME}
+      -Dgradle.wrapperPassword=${env.TOKEN_PASSWORD}
+      build -x test
+
 pr_check:
   #  vector:
   #    compare:
