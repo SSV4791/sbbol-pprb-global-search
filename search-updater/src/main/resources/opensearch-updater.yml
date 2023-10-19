@@ -1,0 +1,24 @@
+opensearch:
+  urls: localhost:9200
+  auth:
+    type: NATIVE
+    username: "admin"
+    password: "admin"
+  timeout:
+    request: 0
+    connect: 5000
+    socket: 60000
+
+# Путь к каталогу с конфигурационным файлом для библиотеки Logback
+#logback:
+#  path: search.logback.path | default('file:custom')}}
+
+# настройки индексов
+# параметры создания индекса пролитых скриптов
+index:
+  updater_queries:
+    number_of_shards: 1
+    number_of_replicas: 0
+  counterparties:
+    number_of_shards: 1
+    number_of_replicas: 0

@@ -35,23 +35,8 @@ pluginManagement {
     plugins {
         id("com.intershop.gradle.javacc") version "3.0.3"
         id("io.spring.dependency-management") version "1.0.11.RELEASE"
-        id("org.openapi.generator") version "5.2.0"
+        id("org.openapi.generator") version "6.4.0"
         id("org.springframework.boot") version "2.5.1"
-    }
-}
-
-plugins {
-    id("com.gradle.enterprise") version "3.0"
-}
-
-gradleEnterprise {
-    buildScan {
-        server = "http://dev-sbbol2.sigma.sbrf.ru:8801"
-        allowUntrustedServer = true
-        isCaptureTaskInputFiles = true
-        gradle.taskGraph.whenReady {
-            publishAlwaysIf(!gradle.taskGraph.hasTask(":addCredentials"))
-        }
     }
 }
 

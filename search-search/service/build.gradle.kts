@@ -6,6 +6,9 @@ plugins {
 
 dependencies {
     annotationProcessor(liveLibs.mapstruct.processor)
+    annotationProcessor(liveLibs.lombok)
+
+    compileOnly(liveLibs.lombok)
 
     implementation(project(":search-search:api"))
     implementation(project(":search-common:engine:starter"))

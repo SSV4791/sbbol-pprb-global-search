@@ -11,6 +11,8 @@ hibernate-jpamodelgen = { module = "org.hibernate:hibernate-jpamodelgen", versio
 http-healthcheck-starter = { module = "ru.sbrf.sbbol.starters:http-healthcheck-starter", version = "4.1" }
 jackson-annotations = { module = "com.fasterxml.jackson.core:jackson-annotations", version.ref = "jackson" }
 jackson-databind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jackson" }
+jackson-databind-nullable = { module = "org.openapitools:jackson-databind-nullable", version = "0.2.6" }
+jakarta-annotation-api = { module = "jakarta.annotation:jakarta.annotation-api", version ="1.3.5" }
 logstash-logback-encoder = { module = "net.logstash.logback:logstash-logback-encoder", version = "6.3" }
 lombok = { module = "org.projectlombok:lombok", version = "1.18.20" }
 mapstruct-core = { module = "org.mapstruct:mapstruct", version.ref = "mapstruct" }
@@ -30,6 +32,7 @@ spring-boot-starter-validation = { module = "org.springframework.boot:spring-boo
 spring-boot-starter-web = { module = "org.springframework.boot:spring-boot-starter-web" }
 spring-kafka = { module = "org.springframework.kafka:spring-kafka" }
 spring-web = { module = "org.springframework:spring-web" }
+springdoc-openapi-ui = { module = "org.springdoc:springdoc-openapi-ui", version = "1.7.0" }
 
 [bundles]
 opensearch = ["opensearch", "opensearch-rest-client", "opensearch-rest-high-level-client"]

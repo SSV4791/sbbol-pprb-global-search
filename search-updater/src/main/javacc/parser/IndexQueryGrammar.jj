@@ -3,14 +3,14 @@
 */
 
 PARSER_BEGIN(IndexQueryParser)
-package ru.sbrf.sbbol.search.updater.parser;
+package ru.sberbank.pprb.sbbol.global_search.updater.parser;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.springframework.http.HttpMethod;
-import ru.sbrf.sbbol.search.updater.query.IndexQueryParam;
-import ru.sbrf.sbbol.search.updater.query.IndexQuery;
-import ru.sbrf.sbbol.search.updater.query.IndexQueryFileData;
-import ru.sbrf.sbbol.search.updater.query.IndexQueryFileParam;
+import ru.sberbank.pprb.sbbol.global_search.updater.query.IndexQueryParam;
+import ru.sberbank.pprb.sbbol.global_search.updater.query.IndexQuery;
+import ru.sberbank.pprb.sbbol.global_search.updater.query.IndexQueryFileData;
+import ru.sberbank.pprb.sbbol.global_search.updater.query.IndexQueryFileParam;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -143,7 +143,7 @@ TOKEN : {
 IndexQueryFileData parse() throws IOException :
 {
     Collection <IndexQuery> queries = new ArrayList<IndexQuery>();
-    Map<ru.sbrf.sbbol.search.updater.query.IndexQueryFileParam, String> params;
+    Map<ru.sberbank.pprb.sbbol.global_search.updater.query.IndexQueryFileParam, String> params;
     IndexQuery query;
 }
 {
@@ -160,7 +160,7 @@ IndexQueryFileData parse() throws IOException :
     )*
     <EOF>
     {
-    return new ru.sbrf.sbbol.search.updater.query.IndexQueryFileData(params, queries);
+    return new ru.sberbank.pprb.sbbol.global_search.updater.query.IndexQueryFileData(params, queries);
 }
 }
 
@@ -187,7 +187,7 @@ IndexQuery instruction() throws IOException :
     HttpMethod method;
     String endpoint;
     Map<String, Object> jsonBody;
-    Map<ru.sbrf.sbbol.search.updater.query.IndexQueryParam, String> params;
+    Map<ru.sberbank.pprb.sbbol.global_search.updater.query.IndexQueryParam, String> params;
 }
 {
     params = params()

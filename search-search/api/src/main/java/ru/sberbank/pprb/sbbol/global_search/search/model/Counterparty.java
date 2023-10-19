@@ -7,9 +7,8 @@ import lombok.ToString;
 import ru.sberbank.pprb.sbbol.global_search.core.common.DefaultIndexNameResolvingStrategy;
 import ru.sberbank.pprb.sbbol.global_search.core.entity.IndexNameResolvingStrategyRef;
 import ru.sberbank.pprb.sbbol.global_search.core.entity.Queryable;
-import ru.sberbank.pprb.sbbol.global_search.core.entity.SearchableEntity;
-import ru.sberbank.pprb.sbbol.global_search.search.model.restrictions.DigitalIdRestriction;
 import ru.sberbank.pprb.sbbol.global_search.search.model.restrictions.RestrictedAccess;
+import ru.sberbank.pprb.sbbol.global_search.core.entity.SearchableEntity;
 
 @SearchableEntity(
     name = Counterparty.ENTITY_NAME,
@@ -32,12 +31,4 @@ public class Counterparty extends BaseSearchableEntity {
 
     @Queryable
     private String inn;
-
-    @Queryable
-    private String kpp;
-
-    @Queryable
-    private String bankBic;
-
-    private String bankAccount;
 }

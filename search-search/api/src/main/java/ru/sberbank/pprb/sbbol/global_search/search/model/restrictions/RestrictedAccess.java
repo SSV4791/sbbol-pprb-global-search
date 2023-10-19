@@ -1,5 +1,7 @@
 package ru.sberbank.pprb.sbbol.global_search.search.model.restrictions;
 
+import ru.sberbank.pprb.sbbol.global_search.search.model.Restriction;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -17,7 +19,7 @@ public @interface RestrictedAccess {
      * <p>Должны явно присутствовать в передаваемом поисковом фильтре.
      * Отсутствие хотя бы одного из них в фильтре приводит к ошибке выполнения запроса.
      *
-     * @see ru.sbrf.sbbol.search.model.SearchFilter#entityTypeRestrictions
+     * @see ru.sberbank.pprb.sbbol.global_search.search.model.SearchFilter#entityRestrictions
      */
     Class<? extends Restriction>[] mandatoryRestrictions() default {};
 
@@ -25,7 +27,7 @@ public @interface RestrictedAccess {
      * Типы дополнительных ограничений.
      * <p>Могут, но не должны, присутствовать в поисковом фильтре. Ограничивают список доступных для сущности ограничений.
      *
-     * @see ru.sbrf.sbbol.search.model.SearchFilter#entityTypeRestrictions
+     * @see ru.sberbank.pprb.sbbol.global_search.search.model.SearchFilter#entityRestrictions
      */
     Class<? extends Restriction>[] additionalRestrictions() default {};
 }
