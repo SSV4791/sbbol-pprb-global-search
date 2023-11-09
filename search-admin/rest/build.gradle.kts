@@ -16,4 +16,4 @@ dependencies {
     implementation(liveLibs.spring.boot.starter.web)
 }
 
-description = "REST Controllers ППРБ.Digital.Умный поиск Task"
+description = "REST Controllers ППРБ.Digital.Умный поиск Admin"

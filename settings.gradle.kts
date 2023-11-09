@@ -44,6 +44,7 @@ rootProject.name = "sbbol-pprb-global-search"
 
 include(":docs")
 include(":search-admin:runner")
+include(":search-admin:rest")
 include(":search-common:engine:core-api")
 include(":search-common:engine:core-impl")
 include(":search-common:engine:starter")
