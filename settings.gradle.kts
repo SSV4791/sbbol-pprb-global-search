@@ -64,3 +64,10 @@ include(":search-task:rest")
 include(":search-task:runner")
 include(":search-task:service")
 include(":search-updater")
+include(":search-producer:api")
+include(":search-producer:impl")
+include(":search-producer:starter")
+
+project(":search-producer:api").name = "search-producer-api"
+project(":search-producer:impl").name = "search-producer-impl"
+project(":search-producer:starter").name = "search-producer-starter"
