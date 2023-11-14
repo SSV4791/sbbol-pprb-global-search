@@ -7,19 +7,19 @@ import lombok.ToString;
 import ru.sberbank.pprb.sbbol.global_search.core.common.DefaultIndexNameResolvingStrategy;
 import ru.sberbank.pprb.sbbol.global_search.core.entity.IndexNameResolvingStrategyRef;
 import ru.sberbank.pprb.sbbol.global_search.core.entity.Queryable;
-import ru.sberbank.pprb.sbbol.global_search.search.model.restrictions.RestrictedAccess;
 import ru.sberbank.pprb.sbbol.global_search.core.entity.SearchableEntity;
+import ru.sberbank.pprb.sbbol.global_search.search.model.restrictions.RestrictedAccess;
 
 @SearchableEntity(
-    name = Counterparty.ENTITY_NAME,
+    name = Partner.ENTITY_NAME,
     indexNameResolvingStrategy = @IndexNameResolvingStrategyRef(type = DefaultIndexNameResolvingStrategy.class)
 )
 @RestrictedAccess(mandatoryRestrictions = DigitalIdRestriction.class)
 @EqualsAndHashCode(callSuper = false)
 @ToString
-public class Counterparty extends BaseSearchableEntity {
+public class Partner extends BaseSearchableEntity {
 
-    static final String ENTITY_NAME = "counterparty";
+    static final String ENTITY_NAME = "partner";
 
     private String digitalId;
 

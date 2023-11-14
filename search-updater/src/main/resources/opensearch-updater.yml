@@ -19,6 +19,6 @@ index:
   updater_queries:
     number_of_shards: 1
     number_of_replicas: 0
-  counterparties:
+  partner:
     number_of_shards: 1
     number_of_replicas: 0

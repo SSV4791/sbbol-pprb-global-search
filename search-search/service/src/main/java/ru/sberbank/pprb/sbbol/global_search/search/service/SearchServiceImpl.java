@@ -73,7 +73,7 @@ public class SearchServiceImpl implements SearchService {
                 queries.add(entityQuery);
             }
             Collection<QueryResult<?>> searchResults = searchableEntityService.find(queries);
-            createResultResponse(new SearchResponse(), searchResults);
+            return createResultResponse(searchResults);
         }
         return new SearchResponse();
     }
@@ -98,8 +98,9 @@ public class SearchServiceImpl implements SearchService {
             .collect(Collectors.toList());
     }
 
-    private void createResultResponse(SearchResponse response, Collection<QueryResult<?>> searchResults) {
-        response.setResults(
+    private SearchResponse createResultResponse(Collection<QueryResult<?>> searchResults) {
+        var response = new SearchResponse();
+        return response.results(
             searchResults.stream()
                 .map(this::map)
                 .collect(Collectors.toList())
