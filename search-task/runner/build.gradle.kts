@@ -13,6 +13,8 @@ tasks {
 }
 
 dependencies {
+    implementation(project(":search-task:rest"))
+
     implementation(platform(liveLibs.spring.boot.dependencies))
 
     implementation(liveLibs.http.healthcheck.starter)

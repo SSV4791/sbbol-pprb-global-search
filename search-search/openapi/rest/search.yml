@@ -1,0 +1,156 @@
+openapi: "3.0.3"
+info:
+  title: Request for search
+  version: 0.0.1
+  description: OpenAPI Specification for search
+
+servers:
+  - url: /
+
+paths:
+  /api/v1/find:
+    post:
+      tags:
+        - Search
+      summary: Поисковы запрос
+      operationId: find
+      requestBody:
+        description: Поисковый фильтр
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SearchFilter"
+      responses:
+        200:
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SearchResponse"
+
+components:
+  schemas:
+    SearchFilter:
+      properties:
+        query:
+          type: string
+          description: "Поисковый запрос"
+        entityRestrictions:
+          type: array
+          items:
+            $ref: "#/components/schemas/EntityRestrictions"
+        pagination:
+          $ref: "#/components/schemas/Pagination"
+      required: [
+        query,
+        entityRestrictions,
+        pagination
+      ]
+    EntityRestrictions:
+      type: object
+      description: "Типы запрашиваемых сущностей с налагаемыми на них ограничениями"
+      properties:
+        entityType:
+          $ref: "#/components/schemas/EntityType"
+        restriction:
+          type: array
+          description: "Ограничение поискового фильтра"
+          items:
+            $ref: "#/components/schemas/Restriction"
+    EntityType:
+      type: string
+      description: "Тип сущности, доступной для полнотекстового поиска"
+      enum:
+        - COUNTERPARTY
+        - PAYMENT_ORDER
+        - HELP_ITEM
+        - MENU
+    Restriction:
+      type: object
+      description: "Ограничение поискового фильтра"
+      discriminator:
+        propertyName: _class
+      properties:
+        _class:
+          type: string
+      required: [
+        _class
+      ]
+    DigitalIdRestriction:
+      allOf:
+        - $ref: "#/components/schemas/Restriction"
+        - type: object
+          description: "Ограничение поискового фильтра налагаемое на доступ к организации"
+          properties:
+            digitalId:
+              type: string
+    Pagination:
+      type: object
+      description: "Пагинация"
+      properties:
+        size:
+          type: integer
+        offset:
+          type: integer
+      required: [
+        size,
+        offset
+      ]
+    SearchResponse:
+      type: object
+      description: "Ответ документарного поиска"
+      properties:
+        searchGuid:
+          type: string
+          format: uuid
+          description: "Глобальный идентификатор запроса"
+        results:
+          type: array
+          description: "Результаты запросов по каждой из серверных сущностей"
+          items:
+            $ref: "#/components/schemas/ServerSearchResult"
+    ServerSearchResult:
+      type: object
+      description: "Результат запроса сущности документарного поиска"
+      properties:
+        entityType:
+          $ref: "#/components/schemas/EntityType"
+        entities:
+          type: array
+          description: "Коллекция объектов найденной сущности"
+          items:
+            $ref: "#/components/schemas/SearchableEntity"
+        duration:
+          type: integer
+          format: int64
+          description: "Продолжительность выполнения запроса (в мс)"
+        resultCount:
+          type: integer
+          format: int64
+          description: "Количество найденных результатов"
+    SearchableEntity:
+      type: object
+      discriminator:
+        propertyName: _class
+      properties:
+        _class:
+          type: string
+      required: [
+        _class
+      ]
+    CounterpartyEntity:
+      type: object
+      allOf:
+        - $ref: "#/components/schemas/SearchableEntity"
+        - type: object
+          description: Контрагент
+          properties:
+            entityId:
+              type: string
+              format: uuid
+              description: "Глобальный идентификатор объекта"
+            name:
+              type: string
+            inn:
+              type: string

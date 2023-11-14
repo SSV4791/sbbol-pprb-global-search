@@ -1,0 +1,151 @@
+## GUID=d967fa58-c934-4951-8687-c368b0d0e556
+
+/*
+  Создание шаблона индекса контрагентов
+*/
+# ENTITY_NAME=partner
+PUT _template/partner_template
+{
+    // настройка соответствия наименований индексов шаблону
+    "index_patterns": ["partner_idx*"],
+    // настройка алиаса
+    "aliases" : {
+        "partners" : {}
+    },
+    // параметры индекса
+    "settings" : {
+        "index" : {
+            "number_of_shards" : ${index.partner.number_of_shards},
+            "number_of_replicas" : ${index.partner.number_of_replicas},
+            "max_ngram_diff" : 50
+        },
+        // настройки анализаторов
+        "analysis" : {
+            "analyzer" : {
+                "name_index_analyzer" : {
+                    "char_filter" : [
+                        "yo_filter"
+                    ],
+                    "tokenizer": "standard",
+                    "filter" : [
+                        "lowercase",
+                        "name_multiplexer_filter"
+                    ]
+                },
+                "name_search_analyzer" : {
+                    "char_filter" : [
+                        "yo_filter"
+                    ],
+                    "tokenizer": "standard",
+                    "filter" : "lowercase"
+                },
+                "account_analyzer" : {
+                    "tokenizer" : "account_tokenizer"
+                },
+                "account_search_analyzer" : {
+                    "char_filter" : "point_filter",
+                    "tokenizer" : "standard"
+                },
+                "inn_analyzer" : {
+                    "tokenizer" : "account_tokenizer"
+                }
+            },
+            "filter" : {
+                "name_multiplexer_filter" : {
+                    "type" : "multiplexer",
+                    "filters" : [
+                        "classic",
+                        "name_ngram_filter"
+                    ]
+                },
+                "name_ngram_filter" : {
+                    "type" : "ngram",
+                    "min_gram" : 3,
+                    "max_gram" : 50
+                }
+            },
+            "tokenizer" : {
+                "account_tokenizer" : {
+                    "type" : "edge_ngram",
+                    "min_gram" : 3,
+                    "max_gram" : 20
+                }
+            },
+            "char_filter" : {
+                "yo_filter" : {
+                    "type": "mapping",
+                    "mappings": [
+                        "Ё => Е",
+                        "ё => е"
+                    ]
+                },
+                "point_filter": {
+                   "type": "mapping",
+                    "mappings": ". => "
+                }
+            }
+        }
+    },
+    // настройка маппинга полей индекса
+    "mappings" : {
+        "dynamic": "strict",
+        "properties" : {
+            "id" : {
+                "type" : "text",
+                "index" : false
+            },
+            "entityId" : {
+                "type" : "keyword",
+                "ignore_above" : 36,
+                "index" : false
+            },
+            "version" : {
+                "type" : "integer",
+                "index" : false
+            },
+            "digitalId" : {
+                "type" : "integer",
+                "index" : false
+            },
+            "name" : {
+                "type" : "text",
+                "search_analyzer" : "name_search_analyzer",
+                "analyzer" : "name_index_analyzer"
+            },
+            "account" : {
+                "type" : "text",
+                "search_analyzer" : "account_search_analyzer",
+                "analyzer" : "account_analyzer",
+                "fields" : {
+                    "raw" : {
+                        "type" : "keyword",
+                        "ignore_above" : 20
+                    }
+                }
+            },
+            "inn" : {
+                "type" : "text",
+                "search_analyzer" : "standard",
+                "analyzer" : "inn_analyzer",
+                "fields" : {
+                    "raw" : {
+                        "type" : "keyword",
+                        "ignore_above" : 12
+                    }
+                }
+            },
+            "kpp" : {
+                "type" : "keyword",
+                "ignore_above" : 9
+            },
+            "bankBic" : {
+                "type" : "keyword",
+                "ignore_above" : 9
+            },
+            "bankAccount" : {
+                "type" : "keyword",
+                "ignore_above" : 20
+            }
+        }
+    }
+}

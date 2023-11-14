@@ -2,7 +2,7 @@ package ru.sberbank.pprb.sbbol.global_search.search.restrictions;
 
 
 import ru.sberbank.pprb.sbbol.global_search.engine.query.condition.Condition;
-import ru.sberbank.pprb.sbbol.global_search.search.model.restrictions.Restriction;
+import ru.sberbank.pprb.sbbol.global_search.search.model.Restriction;
 
 /**
  * Конвертор преобразования ограничения фильтра в условие запроса
