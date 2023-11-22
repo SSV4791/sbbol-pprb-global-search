@@ -4,6 +4,17 @@ plugins {
     id("org.springframework.boot") apply false
 }
 
+tasks {
+    compileJava {
+        options.compilerArgs.addAll(
+            listOf(
+                "-Amapstruct.defaultComponentModel=spring",
+                "-Amapstruct.defaultInjectionStrategy=constructor"
+            )
+        )
+    }
+}
+
 dependencies {
     annotationProcessor(liveLibs.mapstruct.processor)
     annotationProcessor(liveLibs.lombok)

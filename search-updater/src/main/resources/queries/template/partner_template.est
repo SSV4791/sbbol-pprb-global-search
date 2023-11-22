@@ -1,7 +1,7 @@
 ## GUID=d967fa58-c934-4951-8687-c368b0d0e556
 
 /*
-  Создание шаблона индекса контрагентов
+  Создание шаблона индекса партнеров
 */
 # ENTITY_NAME=partner
 PUT _template/partner_template
@@ -10,7 +10,7 @@ PUT _template/partner_template
     "index_patterns": ["partner_idx*"],
     // настройка алиаса
     "aliases" : {
-        "partners" : {}
+        "partner" : {}
     },
     // параметры индекса
     "settings" : {
@@ -38,13 +38,6 @@ PUT _template/partner_template
                     ],
                     "tokenizer": "standard",
                     "filter" : "lowercase"
-                },
-                "account_analyzer" : {
-                    "tokenizer" : "account_tokenizer"
-                },
-                "account_search_analyzer" : {
-                    "char_filter" : "point_filter",
-                    "tokenizer" : "standard"
                 },
                 "inn_analyzer" : {
                     "tokenizer" : "account_tokenizer"
@@ -91,7 +84,7 @@ PUT _template/partner_template
         "dynamic": "strict",
         "properties" : {
             "id" : {
-                "type" : "text",
+                "type" : "keyword",
                 "index" : false
             },
             "entityId" : {
@@ -104,24 +97,12 @@ PUT _template/partner_template
                 "index" : false
             },
             "digitalId" : {
-                "type" : "integer",
-                "index" : false
+                "type" : "keyword"
             },
             "name" : {
                 "type" : "text",
                 "search_analyzer" : "name_search_analyzer",
                 "analyzer" : "name_index_analyzer"
-            },
-            "account" : {
-                "type" : "text",
-                "search_analyzer" : "account_search_analyzer",
-                "analyzer" : "account_analyzer",
-                "fields" : {
-                    "raw" : {
-                        "type" : "keyword",
-                        "ignore_above" : 20
-                    }
-                }
             },
             "inn" : {
                 "type" : "text",
@@ -137,14 +118,6 @@ PUT _template/partner_template
             "kpp" : {
                 "type" : "keyword",
                 "ignore_above" : 9
-            },
-            "bankBic" : {
-                "type" : "keyword",
-                "ignore_above" : 9
-            },
-            "bankAccount" : {
-                "type" : "keyword",
-                "ignore_above" : 20
             }
         }
     }

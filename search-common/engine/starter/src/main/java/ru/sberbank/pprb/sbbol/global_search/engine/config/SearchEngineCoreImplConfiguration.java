@@ -15,12 +15,12 @@ import ru.sberbank.pprb.sbbol.global_search.engine.entity.metadata.impl.EntityMe
 import ru.sberbank.pprb.sbbol.global_search.engine.entity.metadata.impl.EntityMetadataProviderImpl;
 import ru.sberbank.pprb.sbbol.global_search.engine.entity.metadata.impl.EntityToInternalEntityHolderConverterImpl;
 import ru.sberbank.pprb.sbbol.global_search.engine.entity.metadata.impl.SearchableEntitiesLocationScannerImpl;
-import ru.sberbank.pprb.sbbol.global_search.facade.OpenSearchClientFacade;
-import ru.sberbank.pprb.sbbol.global_search.facade.OpenSearchIndexApiFacade;
 import ru.sberbank.pprb.sbbol.global_search.engine.index.IndexLifecycleService;
 import ru.sberbank.pprb.sbbol.global_search.engine.index.IndexLifecycleServiceImpl;
 import ru.sberbank.pprb.sbbol.global_search.engine.query.condition.ConditionMapper;
 import ru.sberbank.pprb.sbbol.global_search.engine.query.condition.impl.ConditionMapperImpl;
+import ru.sberbank.pprb.sbbol.global_search.facade.OpenSearchClientFacade;
+import ru.sberbank.pprb.sbbol.global_search.facade.OpenSearchIndexApiFacade;
 
 import java.util.Collections;
 import java.util.List;

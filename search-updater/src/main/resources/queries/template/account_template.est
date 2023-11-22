@@ -1,0 +1,110 @@
+## GUID=d967fa58-c934-4951-8687-c368b0d0e557
+
+/*
+  Создание шаблона индекса счетов партнеров
+*/
+# ENTITY_NAME=account
+PUT _template/account_template
+{
+    // настройка соответствия наименований индексов шаблону
+    "index_patterns": ["account_idx*"],
+    // настройка алиаса
+    "aliases" : {
+        "account" : {}
+    },
+    // параметры индекса
+    "settings" : {
+        "index" : {
+            "number_of_shards" : ${index.account.number_of_shards},
+            "number_of_replicas" : ${index.account.number_of_replicas},
+            "max_ngram_diff" : 50
+        },
+        // настройки анализаторов
+        "analysis" : {
+            "analyzer" : {
+                "account_analyzer" : {
+                    "tokenizer" : "account_tokenizer"
+                },
+                "account_search_analyzer" : {
+                    "char_filter" : "point_filter",
+                    "tokenizer" : "standard"
+                }
+            },
+            "filter" : {
+                "name_multiplexer_filter" : {
+                    "type" : "multiplexer",
+                    "filters" : [
+                        "classic",
+                        "name_ngram_filter"
+                    ]
+                },
+                "name_ngram_filter" : {
+                    "type" : "ngram",
+                    "min_gram" : 3,
+                    "max_gram" : 50
+                }
+            },
+            "tokenizer" : {
+                "account_tokenizer" : {
+                    "type" : "edge_ngram",
+                    "min_gram" : 3,
+                    "max_gram" : 20
+                }
+            },
+            "char_filter" : {
+                "yo_filter" : {
+                    "type": "mapping",
+                    "mappings": [
+                        "Ё => Е",
+                        "ё => е"
+                    ]
+                },
+                "point_filter": {
+                   "type": "mapping",
+                    "mappings": ". => "
+                }
+            }
+        }
+    },
+    // настройка маппинга полей индекса
+    "mappings" : {
+        "dynamic": "strict",
+        "properties" : {
+            "id" : {
+                "type" : "keyword",
+                "index" : false
+            },
+            "entityId" : {
+                "type" : "keyword",
+                "ignore_above" : 36,
+                "index" : false
+            },
+            "version" : {
+                "type" : "integer",
+                "index" : false
+            },
+            "digitalId" : {
+                "type" : "keyword"
+            },
+            "account" : {
+                "type" : "text",
+                "search_analyzer" : "account_search_analyzer",
+                "analyzer" : "account_analyzer",
+                "fields" : {
+                    "raw" : {
+                        "type" : "keyword",
+                        "ignore_above" : 20
+                    }
+                }
+            },
+            "bic" : {
+                "type" : "keyword",
+                "ignore_above" : 9
+            },
+            "bankAccount" : {
+                "type" : "keyword",
+                "ignore_above" : 20
+            }
+        }
+    }
+}
