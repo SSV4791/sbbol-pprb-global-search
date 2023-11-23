@@ -53,4 +53,7 @@ tasks.register<Zip>("fullDistrib") {
     from("${rootDir}/vectors/") {
         into("vectors")
     }
+    from("${rootDir}/search-updater/build/libs") {
+        into("search-updater")
+    }
 }
