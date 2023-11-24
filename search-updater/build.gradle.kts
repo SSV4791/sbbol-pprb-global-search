@@ -61,6 +61,7 @@ tasks {
             attributes["Main-Class"] = "ru.sberbank.pprb.sbbol.global_search.updater.OpenSearchUpdaterApplication"
         }
         from(configurations.runtimeClasspath.get().map(::zipTree))
+        exclude ("META-INF/*.SF", "META-INF/*.DSA", "META-INF/*.RSA")
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     }
     val basePath = "$projectDir/src/main/resources/queries"
