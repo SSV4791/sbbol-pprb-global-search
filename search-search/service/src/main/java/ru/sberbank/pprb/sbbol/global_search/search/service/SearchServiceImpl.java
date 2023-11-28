@@ -15,7 +15,6 @@ import ru.sberbank.pprb.sbbol.global_search.search.model.Restriction;
 import ru.sberbank.pprb.sbbol.global_search.search.model.RestrictionCheckResult;
 import ru.sberbank.pprb.sbbol.global_search.search.model.SearchFilter;
 import ru.sberbank.pprb.sbbol.global_search.search.model.SearchResponse;
-import ru.sberbank.pprb.sbbol.global_search.search.model.ServerSearchResult;
 import ru.sberbank.pprb.sbbol.global_search.search.restrictions.RestrictionConverter;
 import ru.sberbank.pprb.sbbol.global_search.search.restrictions.RestrictionConverterFactory;
 import ru.sberbank.pprb.sbbol.global_search.search.service.restrictions.RestrictionService;
@@ -24,9 +23,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static ru.sberbank.pprb.sbbol.global_search.search.mapper.SearchMapper.toSearchEntity;
-import static ru.sberbank.pprb.sbbol.global_search.search.mapper.SearchMapper.toSearchableEntityType;
 
 /**
  * Реализация сервиса полнотекстового поиска с использованием OpenSearch в качестве хранилища
@@ -73,7 +69,7 @@ public class SearchServiceImpl implements SearchService {
                 queries.add(entityQuery);
             }
             Collection<QueryResult<?>> searchResults = searchableEntityService.find(queries);
-            return createResultResponse(searchResults);
+            return searchMapper.createResultResponse(searchResults);
         }
         return new SearchResponse();
     }
@@ -96,22 +92,5 @@ public class SearchServiceImpl implements SearchService {
                 return converter.getCondition(restriction);
             })
             .collect(Collectors.toList());
-    }
-
-    private SearchResponse createResultResponse(Collection<QueryResult<?>> searchResults) {
-        var response = new SearchResponse();
-        return response.results(
-            searchResults.stream()
-                .map(this::map)
-                .collect(Collectors.toList())
-        );
-    }
-
-    private <T> ServerSearchResult map(QueryResult<T> queryResult) {
-        return new ServerSearchResult()
-            .entityType(toSearchableEntityType(queryResult.getEntityClass()))
-            .entities(toSearchEntity(queryResult.getEntities()))
-            .duration(queryResult.getDuration())
-            .resultCount(queryResult.getTotalResultCount());
     }
 }

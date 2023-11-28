@@ -21,7 +21,7 @@ public class BaseSearchableEntity {
     private UUID entityId;
 
     @Sortable("id")
-    private Long id;
+    private String id;
 
     @ExternalVersion
     private Integer version;

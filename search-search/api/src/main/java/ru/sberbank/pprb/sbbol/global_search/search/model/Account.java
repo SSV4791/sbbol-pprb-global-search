@@ -16,7 +16,7 @@ import ru.sberbank.pprb.sbbol.global_search.core.entity.SearchableEntity;
 import ru.sberbank.pprb.sbbol.global_search.search.model.restrictions.RestrictedAccess;
 
 @SearchableEntity(
-    name = Partner.ENTITY_NAME,
+    name = Account.ENTITY_NAME,
     indexNameResolvingStrategy = @IndexNameResolvingStrategyRef(type = DefaultIndexNameResolvingStrategy.class)
 )
 @RestrictedAccess(mandatoryRestrictions = DigitalIdRestriction.class)
@@ -24,9 +24,9 @@ import ru.sberbank.pprb.sbbol.global_search.search.model.restrictions.Restricted
 @ToString
 @Getter
 @Setter
-public class Partner extends BaseSearchableEntity {
+public class Account extends BaseSearchableEntity {
 
-    static final String ENTITY_NAME = "partner";
+    static final String ENTITY_NAME = "account";
 
     @RoutingValue(
         mapper = @RoutingValueMapperRef(type = StringToStringMapper.class)
@@ -34,11 +34,11 @@ public class Partner extends BaseSearchableEntity {
     private String digitalId;
 
     @Queryable
-    private String name;
+    private String account;
 
     @Queryable
-    private String inn;
+    private String bic;
 
     @Queryable
-    private String kpp;
+    private String bankAccount;
 }

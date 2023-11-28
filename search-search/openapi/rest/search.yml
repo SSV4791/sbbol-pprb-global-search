@@ -62,7 +62,8 @@ components:
       type: string
       description: "Тип сущности, доступной для полнотекстового поиска"
       enum:
-        - COUNTERPARTY
+        - PARTNER
+        - ACCOUNT
         - PAYMENT_ORDER
         - HELP_ITEM
         - MENU
@@ -139,7 +140,24 @@ components:
       required: [
         _class
       ]
-    CounterpartyEntity:
+    PartnerEntity:
+      type: object
+      allOf:
+        - $ref: "#/components/schemas/SearchableEntity"
+        - type: object
+          description: Партнер
+          properties:
+            entityId:
+              type: string
+              format: uuid
+              description: "Глобальный идентификатор объекта"
+            name:
+              type: string
+            inn:
+              type: string
+            kpp:
+              type: string
+    AccountEntity:
       type: object
       allOf:
         - $ref: "#/components/schemas/SearchableEntity"
@@ -150,7 +168,9 @@ components:
               type: string
               format: uuid
               description: "Глобальный идентификатор объекта"
-            name:
+            account:
               type: string
-            inn:
+            bic:
+              type: string
+            bankAccount:
               type: string
