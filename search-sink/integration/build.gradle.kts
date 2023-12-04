@@ -8,6 +8,7 @@ dependencies {
     annotationProcessor(liveLibs.lombok)
     compileOnly(liveLibs.lombok)
 
+    implementation(project(":search-search:api"))
     implementation(project(":search-sink:service"))
     implementation(platform(liveLibs.spring.boot.dependencies))
     implementation(liveLibs.spring.boot.starter)

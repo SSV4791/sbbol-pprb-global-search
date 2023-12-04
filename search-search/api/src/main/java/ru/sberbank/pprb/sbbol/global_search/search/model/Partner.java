@@ -1,9 +1,10 @@
 
 package ru.sberbank.pprb.sbbol.global_search.search.model;
 
-
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import ru.sberbank.pprb.sbbol.global_search.core.common.DefaultIndexNameResolvingStrategy;
@@ -15,6 +16,8 @@ import ru.sberbank.pprb.sbbol.global_search.core.entity.RoutingValueMapperRef;
 import ru.sberbank.pprb.sbbol.global_search.core.entity.SearchableEntity;
 import ru.sberbank.pprb.sbbol.global_search.search.model.restrictions.RestrictedAccess;
 
+import java.util.UUID;
+
 @SearchableEntity(
     name = Partner.ENTITY_NAME,
     indexNameResolvingStrategy = @IndexNameResolvingStrategyRef(type = DefaultIndexNameResolvingStrategy.class)
@@ -24,6 +27,7 @@ import ru.sberbank.pprb.sbbol.global_search.search.model.restrictions.Restricted
 @ToString
 @Getter
 @Setter
+@NoArgsConstructor
 public class Partner extends BaseSearchableEntity {
 
     static final String ENTITY_NAME = "partner";
@@ -41,4 +45,14 @@ public class Partner extends BaseSearchableEntity {
 
     @Queryable
     private String kpp;
+
+    @Builder
+    public Partner(UUID entityId, String id, Integer version, String digitalId, String name, String inn, String kpp) {
+        super(entityId, id, version);
+        this.digitalId = digitalId;
+        this.name = name;
+        this.inn = inn;
+        this.kpp = kpp;
+    }
+
 }

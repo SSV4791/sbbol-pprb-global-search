@@ -88,10 +88,11 @@ app_journal:
   secret: secret-appjournalstubsettings
 
 app:
-  kafka:
-    indexing:
+  global_search:
+    kafka:
       consumer:
-        topic: SBBOL_PPRB_GLOBAL_SEARCH_INDEXING_TOPIC
+        enable: false
+        topic: DIGITALGLOBALSEARCH.CI04756650_INDEXINGENTITYEVENT.V1
         session_timeout: 20000
         poll_time: 10000
         client_id: sbbol_pprb_global_search_consumer
@@ -100,4 +101,3 @@ app:
         auto_offset_reset: latest
         key_deserializer: org.apache.kafka.common.serialization.StringDeserializer
         value_deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
-      bootstrap_servers: tkliq-esdb00012.vm.mos.cloud.sbrf.ru:9093,tkliq-esdb00013.vm.mos.cloud.sbrf.ru:9093,tkliq-esdb00014.vm.mos.cloud.sbrf.ru:9093,tkliq-esdb00009.vm.mos.cloud.sbrf.ru:9093

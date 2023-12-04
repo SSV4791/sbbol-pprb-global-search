@@ -28,17 +28,18 @@ data:
     management.metrics.tags.application={{ os_project.name }}-sink
     management.metrics.export.prometheus.enabled=true
 
-    # Kafka Indexing
-    app.kafka.indexing.consumer.topic={{ app.kafka.indexing.consumer.topic }}
-    app.kafka.indexing.consumer.session-timeout={{ app.kafka.indexing.consumer.session_timeout }}
-    app.kafka.indexing.consumer.poll_time=10000
-    app.kafka.indexing.bootstrap-servers={{ app.kafka.indexing.bootstrap_servers }}
-    app.kafka.indexing.consumer.client-id={{ app.kafka.indexing.consumer.client_id }}
-    app.kafka.indexing.consumer.group-id={{ app.kafka.indexing.consumer.group_id }}
-    app.kafka.indexing.consumer.enable-auto-commit={{ app.kafka.indexing.consumer.enable_auto_commit }}
-    app.kafka.indexing.consumer.auto-offset-reset={{ app.kafka.indexing.consumer.auto_offset_reset }}
-    app.kafka.indexing.consumer.key-deserializer={{ app.kafka.indexing.consumer.key_deserializer }}
-    app.kafka.indexing.consumer.value-deserializer={{ app.kafka.indexing.consumer.value_deserializer }}
+    # Kafka Consumer for searchable entity
+    global_search.kafka.bootstrap-servers={% for entry in int_entry.pprb.kafka %}{{ entry.ip }}:{{ entry.port }}{% if not loop.last %},{% endif %}{% endfor %}
+    global_search.kafka.consumer.enable={{ app.global_search.kafka.consumer.enable | default('false') }}
+    global_search.kafka.consumer.topic={{ app.global_search.kafka.consumer.topic | default('DIGITALGLOBALSEARCH.CI04756650_INDEXINGENTITYEVENT.V1') }}
+    global_search.kafka.consumer.session-timeout={{ app.global_search.kafka.consumer.session_timeout | default('20000') }}
+    global_search.kafka.consumer.poll_time={{ app.global_search.kafka.consumer.poll_time | default('10000') }}
+    global_search.kafka.consumer.client-id={{ app.global_search.kafka.consumer.client_id | default('sbbol_pprb_global_search_consumer') }}
+    global_search.kafka.consumer.group-id={{ app.global_search.kafka.consumer.group_id | default('SBBOL_PPRB_GLOBAL_SEARCH_INDEXING_GROUP_ID') }}
+    global_search.kafka.consumer.enable-auto-commit={{ app.global_search.kafka.consumer.enable_auto_commit | default('true') }}
+    global_search.kafka.consumer.auto-offset-reset={{ app.global_search.kafka.consumer.auto_offset_reset | default('latest') }}
+    global_search.kafka.consumer.key-deserializer={{ app.global_search.kafka.consumer.key_deserializer | default('org.apache.kafka.common.serialization.StringDeserializer') }}
+    global_search.kafka.consumer.value-deserializer={{ app.global_search.kafka.consumer.value_deserializer | default('org.springframework.kafka.support.serializer.JsonDeserializer') }}
 
     # Application Journal
     appjournal.moduleId=pprb4-digital-{{ os_project.name }}

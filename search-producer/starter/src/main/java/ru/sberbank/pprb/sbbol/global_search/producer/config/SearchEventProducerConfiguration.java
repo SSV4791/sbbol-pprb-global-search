@@ -21,7 +21,7 @@ import java.util.Map;
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
 @Configuration
-@ConditionalOnProperty(prefix= "global-search.kafka", name = {"topic"})
+@ConditionalOnProperty(prefix= "global_search.kafka", name = {"topic"})
 @EnableKafka
 @EnableConfigurationProperties(SearchEventProducerProperties.class)
 public class SearchEventProducerConfiguration {
