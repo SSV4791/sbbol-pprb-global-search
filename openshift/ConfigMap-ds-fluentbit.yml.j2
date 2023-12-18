@@ -3,6 +3,8 @@ kind: ConfigMap
 apiVersion: v1
 metadata:
   name: cm-ds-fluentbit-{{ canary_suffix }}
+  labels:
+    templates/type: app
 data:
   fluent-bit.conf: >-
     [SERVICE]
@@ -26,6 +28,7 @@ data:
         Add moduleVersion ${moduleVersion}
         Add nodeId ${nodeId}
         Add standId ${standId}
+        Add namespace ${namespace}
     [OUTPUT]
         Name http
         Match *
@@ -33,6 +36,7 @@ data:
         # Например: logger-endpoint-demo-http-ci00641491-idevlg-pprbtsloggertest.apps.test-ose.ca.sbrf.ru
 {# берем нулевой элемент массива #}
         Host {% if int.pprb.fluentbit.v1_0 is mapping %}{{ int.pprb.fluentbit.v1_0.host }}{% else %}{{ int.pprb.fluentbit.v1_0 | map(attribute='host') | first }}{% endif %}
+
         Port 80
         # Метод сервиса приема событий
         URI /v1/events
@@ -45,6 +49,14 @@ data:
     [OUTPUT]
         Name stdout
         Match *
+{% if fluentbit.kafka.app.enabled is defined and fluentbit.kafka.app.enabled | bool %}
+    [OUTPUT]
+        Name kafka
+        Match *
+        Topics {{ fluentbit.kafka.app.topic }}
+        Brokers {% for entry in int_entry.logs %}{{ entry.ip }}:{{ entry.port }}{% if not loop.last %},{% endif %}{% endfor %}
+{% endif %}
+
   parsers.conf: |-
     [PARSER]
         Name custom
