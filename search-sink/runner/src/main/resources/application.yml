@@ -1,10 +1,22 @@
 server:
   port: 8082
 
-app:
+opensearch:
+  urls: localhost:9200
+  auth:
+    type: NATIVE
+    username: "admin"
+    password: "admin"
+  timeout:
+    request: 60000
+    connect: 5000
+    socket: 60000
+
+global_search:
   kafka:
-    indexing:
-      bootstrap-servers: localhost:9092
-      consumer:
-        topic: global-search-indexing-topic
-        group-id: global-search-indexing-group-id
+    bootstrap_servers: localhost:9092
+    consumer:
+      enable: false
+      topic: global-search-indexing-topic
+      group-id: global-search-indexing-group-id
+

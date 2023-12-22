@@ -4,8 +4,11 @@ system_integration_entries:
   - "{{ int.pprb.db_main.v1_0 }}"
   - "{{ int.pprb.db_si.v1_0 }}"
   - "{{ int.pprb.fluentbit.v1_0 }}"
+  - "{{ int.pprb.CI03333548_digital_integration_layer.v1_0 }}"
 
 integration_entries: "{{ system_integration_entries + (infra_integration_entries | default([])) }}"
 
 int_entry:
   ott: "{{ int.ott.v2_0 }}"
+  pprb:
+    kafka: "{{ int.pprb.CI03333548_digital_integration_layer.v1_0 }}"
